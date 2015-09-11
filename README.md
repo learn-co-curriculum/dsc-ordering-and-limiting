@@ -159,6 +159,63 @@ id  name        age    breed       owner_id
 3   Lil' Bub    5      American S            
 ```
 
+### `BETWEEN`
+
+As we've already established, being able to sort and select specific data sets is important. Continuing on with our example, let's say we urgently need to select all of the cats whose age is between 1 and 3. To create such a query, we can use `BETWEEN`. Here's an boilerplate `SELECT` statement using `BETWEEN`:
+
+```sql
+SELECT column_name(s) FROM table_name WHERE column_name BETWEEN value1 AND value2;
+```
+
+Let's try it out on our `cats` table:
+
+```sql
+SELECT name FROM cats WHERE age BETWEEN 1 AND 3;
+```
+This should return:
+
+```bash
+Maru
+Hana
+Patches
+```
+
+### NULL
+
+Let's say the adminstrator of our Pets Database has found a new cat. Maybe this person runs an animal shelter, maybe this person is a crazy cat lady, either way, our admin has found an abandoned kitty. This kitty doesn't have a name yet, but should be added to our database right away. We can add data with missing values using the `NULL` keyword. 
+
+Let's insert our new cat into the database. Our abandoned kitty has a breed, but no name or age as of yet: 
+
+```sql
+INSERT INTO cats (name, age, breed) VALUES (NULL, NULL, "Tabby");
+```
+
+Now, if we look at our `cats` data with `SELECT * FROM cats;`, we should see:
+
+```bash
+id          name        age         breed          owner_id  
+----------  ----------  ----------  -------------  ----------
+1           Maru        3           Scottish Fold  1         
+2           Hana        1           Tabby          1         
+3           Lil' Bub    5           American Shor            
+4           Moe         10          Tabby                    
+5           Patches     2           Calico                   
+6                                   Tabby            
+```
+
+We can even select the mysterious, nameless kitty with the following query:
+
+```sql
+SELECT * FROM cats WHERE name IS NULL;
+```
+Thi should return the following: 
+
+```bash
+id          name        age         breed       owner_id  
+----------  ----------  ----------  ----------  ----------
+6                                   Tabby      
+```
+
 ### `COUNT`
 
 Lastly, we'll talk about one SQL aggregate function, `COUNT`. 
