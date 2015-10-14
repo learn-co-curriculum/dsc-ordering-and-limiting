@@ -2,8 +2,13 @@
 
 ## Objectives
 
-1. What are SQL queries and why learn them?
-2. Learn some of the basic queries and how to construct them
+1. Define a query as an SQL statement that retrieves data from a database.
+2. Use the `ORDER BY`modifier to order tables by specific `SELECT` statements.
+3. Use the `ASC` and `DESC` modifier to sort queries in ascending and descending orders.
+4. Use the `LIMIT` modifier to determine the number of records to retrieve from a dataset.
+5. Use the `BETWEEN` modifier to retrieve a specific data set between two ranges. 
+6. Use the `NULL` data type keyword to insert new records into a table.
+7. Use the `COUNT` function to  count the number of records that meet a certain condition.
 
 ## What is a SQL Query?
 
