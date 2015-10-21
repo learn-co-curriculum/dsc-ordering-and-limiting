@@ -44,14 +44,15 @@ First let's create our `pets_database` by running the following command.
 sqlite3 pets_database.db
 ```
 
-Now that we have a database, let's create our `cats` table along with `id`, `name`, `age` and `breed` columns.
+Now that we have a database, let's create our `cats` table along with `id`, `name`, `age`, `breed`, and `owner_id` columns.
 
 ```sql
 	CREATE TABLE cats (
 	 	id INTEGER PRIMARY KEY,
 	 	name TEXT,
 	 	age INTEGER,
-	 	breed TEXT
+	 	breed TEXT,
+	 	owner_id INTEGER
 	);
 ```
 
