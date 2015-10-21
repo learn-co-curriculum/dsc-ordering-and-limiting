@@ -84,7 +84,7 @@ This should return:
 
 ```sql
 .header on       # output the name of each column
-.mode column     # now we are in column mode to, enabling us to run the next two `.width` commands
+.mode column     # now we are in column mode, enabling us to run the next two .width commands
 .width auto      # adjusts and normalizes column width
 # or
 .width NUM1, NUM2 # customize column width
