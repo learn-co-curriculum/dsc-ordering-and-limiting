@@ -59,6 +59,7 @@ Now that we have a database, let's create our `cats` table along with `id`, `nam
 Let's add some cats to our `cats` table to make this more interesting: 
 
 ```sql
+sqlite> INSERT INTO cats (name, age, breed, owner_id) VALUES ("Maru", 3 , "Scottish Fold", 1);
 sqlite> INSERT INTO cats (name, age, breed, owner_id) VALUES ("Hana", 1 , "Tabby", 1);
 sqlite> INSERT INTO cats (name, age, breed) VALUES ("Lil' Bub", 5, "American Shorthair");
 sqlite> INSERT INTO cats (name, age, breed) VALUES ("Moe", 10, "Tabby");
@@ -74,10 +75,11 @@ sqlite> SELECT * FROM cats;
 This should return: 
 
 ```bash
-1|Hana|1|Tabby|1
-2|Lil' Bub|5|American Shorthair|
-3|Moe|10|Tabby|
-4|Patches|2|Calico|
+1|Maru|3|Scottish Fold|1
+2|Hana|1|Tabby|1
+3|Lil' Bub|5|American Shorthair|
+4|Moe|10|Tabby|
+5|Patches|2|Calico|
 ```
 
 **Top-Tip:** You can format the output of your select statements with a few helpful options: 
