@@ -34,11 +34,28 @@ In this exercise, we'll walk through executing a handful of common and handy SQL
 
 ## Code Along: SQL Queries
 
-### Preparing our Database
+### Creating our Database
 
-Once again we'll be using the `pets_database.db` from the previous exercises. Navigate to the directory that holds that database and connect to it with `sqlite3 pets_database.db`. 
+In this code along, we'll be creating a `cats` table in a `pets_database.db`. So, let's navigate to our terminal and get started.
 
-Let's add a few more cats to our `cats` table to make this more interesting: 
+First let's create our `pets_database` by running the following command.
+
+```bash
+sqlite3 pets_database.db
+```
+
+Now that we have a database, let's create our `cats` table along with `id`, `name`, `age` and `breed` columns.
+
+```sql
+	CREATE TABLE cats (
+	 	id INTEGER PRIMARY KEY,
+	 	name TEXT,
+	 	age INTEGER,
+	 	breed TEXT
+	);
+```
+
+Let's add some cats to our `cats` table to make this more interesting: 
 
 ```sql
 sqlite> INSERT INTO cats (name, age, breed, owner_id) VALUES ("Hana", 1 , "Tabby", 1);
@@ -56,11 +73,10 @@ sqlite> SELECT * FROM cats;
 This should return: 
 
 ```bash
-1|Maru|3|Scottish Fold|1
-2|Hana|1|Tabby|1
-3|Lil' Bub|5|American Shorthair|
-4|Moe|10|Tabby|
-5|Patches|2|Calico|
+1|Hana|1|Tabby|1
+2|Lil' Bub|5|American Shorthair|
+3|Moe|10|Tabby|
+4|Patches|2|Calico|
 ```
 
 **Top-Tip:** You can format the output of your select statements with a few helpful options: 
