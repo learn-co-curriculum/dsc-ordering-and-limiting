@@ -264,3 +264,31 @@ COUNT(owner_id)
 ---------------
 2
 ``` 
+
+###Note on `SELECT`
+
+We are now familiar with this syntax:
+
+```sql
+SELECT name FROM cats;
+```
+
+However, you may not know that this can be written like this as well:
+
+```sql
+SELECT cats.name FROM cats;
+```
+
+Both return:
+
+```bash
+name      
+----------
+Maru      
+Hana
+Lil' Bub
+Moe
+Patches    
+```
+
+SQLite allows us to explicitly state the tableName.columnName we want to select. You may see this in the future. Don't let it trip you up.
