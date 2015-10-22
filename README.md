@@ -293,4 +293,26 @@ Moe
 Patches    
 ```
 
-SQLite allows us to explicitly state the tableName.columnName we want to select. You may see this in the future. Don't let it trip you up.
+SQLite allows us to explicitly state the tableName.columnName we want to select. This is particularly useful when we want data from two different tables.
+
+Imagine we have another table called `dogs` with a column for the dog names:
+
+```sql
+	CREATE TABLE dogs (
+      id INTEGER PRIMARY KEY,
+      name TEXT,
+   );
+```
+
+```sql
+	sqlite> INSERT INTO dogs (name) VALUES ("Clifford");
+```
+
+
+If we want to get the names of all the dogs and cats, we can no longer run a query with just the column name.
+`SELECT name FROM cats,dogs;` will return `Error: ambiguous column name: name`.
+
+Instead, we must explicitly follow the tableName.columnName syntax.
+`SELECT cats.name, dogs.name FROM cats, dogs;`
+
+You may see this in the future. Don't let it trip you up.
