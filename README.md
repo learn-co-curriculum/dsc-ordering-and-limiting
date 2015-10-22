@@ -313,6 +313,8 @@ If we want to get the names of all the dogs and cats, we can no longer run a que
 `SELECT name FROM cats,dogs;` will return `Error: ambiguous column name: name`.
 
 Instead, we must explicitly follow the tableName.columnName syntax.
-`SELECT cats.name, dogs.name FROM cats, dogs;`
+```sql
+SELECT cats.name, dogs.name FROM cats, dogs;
+```
 
 You may see this in the future. Don't let it trip you up.
