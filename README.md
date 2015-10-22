@@ -44,6 +44,8 @@ First let's create our `pets_database` by running the following command.
 sqlite3 pets_database.db
 ```
 
+Good work. Let's type `ls` in the terminal and see what just happened. A new file should appear called `pets_database.db`! This is the binary representation of the database. You can think of this like a .jpg file. It won't open up in a text editor, but it does open up in the image viewer app. It is the same way for .db files. They won't open in your editor, but they can be read by the appropriate database engine.
+
 Now that we have a database, let's create our `cats` table along with `id`, `name`, `age`, `breed`, and `owner_id` columns.
 
 ```sql
