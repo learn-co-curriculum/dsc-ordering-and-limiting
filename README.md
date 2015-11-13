@@ -40,11 +40,30 @@ In this exercise, we'll walk through executing a handful of common and handy SQL
 
 ### Preparing our Database
 
-Once again we'll be using the `pets_database.db` from previous exercises. Navigate to the directory that holds that database and connect to it with `sqlite3 pets_database.db`. 
+**Creating the Database:**
 
-Let's add a few more cats to our `cats` table to make this more interesting: 
+We'll use  `pets_database.db` with a `cats` table. Create the database in your terminal with the following: 
+
+```bash
+sqlite3 pets_database.db 
+```
+
+**Creating the table:**
+
+In the `sqlite3>` prompt in your terminal:
 
 ```sql
+CREATE TABLE cats (
+name TEXT,
+age INTEGER,
+breed TEXT
+);
+```
+
+Add the following rows into your table. 
+
+```sql
+sqlite> INSERT INTO cats (name. age. breed, owner_id) VALUES ("Maru", 3,"Scottish Fold", 1);
 sqlite> INSERT INTO cats (name, age, breed, owner_id) VALUES ("Hana", 1 , "Tabby", 1);
 sqlite> INSERT INTO cats (name, age, breed) VALUES ("Lil' Bub", 5, "American Shorthair");
 sqlite> INSERT INTO cats (name, age, breed) VALUES ("Moe", 10, "Tabby");
