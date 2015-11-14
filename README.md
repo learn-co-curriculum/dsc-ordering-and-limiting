@@ -1,18 +1,22 @@
 # Basic SQL Queries
 
+## Overview
+
+In this lesson, we'll cover how to write SQL queries to retrieve and add specific data to SQL database tables.
+
 ## Objectives
 
-1. Define a query as an SQL statement that retrieves data from a database.
-2. Use the `ORDER BY`modifier to order tables by specific `SELECT` statements.
-3. Use the `ASC` and `DESC` modifier to sort queries in ascending and descending orders.
-4. Use the `LIMIT` modifier to determine the number of records to retrieve from a dataset.
-5. Use the `BETWEEN` modifier to retrieve a specific data set between two ranges. 
-6. Use the `NULL` data type keyword to insert new records into a table.
-7. Use the `COUNT` function to  count the number of records that meet a certain condition.
+1. Define a query as an SQL statement that retrieves data from a database
+2. Use the `ORDER BY`modifier to order tables by specific `SELECT` statements
+3. Use the `ASC` and `DESC` modifier to sort queries in ascending and descending orders
+4. Use the `LIMIT` modifier to determine the number of records to retrieve from a dataset
+5. Use the `BETWEEN` modifier to retrieve a specific data set between two ranges
+6. Use the `NULL` data type keyword to insert new records into a table
+7. Use the `COUNT` function to  count the number of records that meet a certain condition
 
 ## What is a SQL Query?
 
-The term "query" refers to any SQL statement that retrieve data from your database. In fact, we've already written a number of SQL queries using basic `SELECT` statements. So, we've already seen how to retrieve single units of data, or rows, with queries like these: 
+The term "query" refers to any SQL statement that retrieve data from your database. In fact, we've already written a number of SQL queries using basic `SELECT` statements. We've already seen how to retrieve single units of data, or rows, with queries like these: 
 
 To select all of the rows from a `cats` table:
 
@@ -26,9 +30,9 @@ To select only rows representing data meeting certain conditions:
 SELECT * FROM cats WHERE name = "Maru";
 ```
 
-What if, however, we wanted to select the oldest cat? Or all of the cats that don't currently belong to an owner. Or all of the cats with short names? 
+What if, however, we wanted to select the oldest cat? Or all of the cats that don't currently belong to an owner? Or all of the cats with short names? 
 
-Data storage isn't very useful if we can't manipulate, view and analyze that data. Luckily for us, SQL is actually a powerful tool for doing just that. 
+Data storage isn't very useful if we can't manipulate, view, and analyze that data. Luckily for us, SQL is actually a powerful tool for doing just that. 
 
 In this exercise, we'll walk through executing a handful of common and handy SQL queries. If you want to take a deeper dive, however, feel free to check out the resources at the bottom of the page. 
 
@@ -134,7 +138,7 @@ id  name        age    breed       owner_id
 3   Lil' Bub    5      American S            
 4   Moe         10     Tabby  
 ```
-When using `ORDER BY`, the default is to order in ascending order. If we want to specify though, we can use `ASC` or "ascending" or `DESC` for "descending". Let's try to select all of our cats and sort them by age in descending order. 
+When using `ORDER BY`, the default is to order in ascending order. If we want to specify though, we can use `ASC` for "ascending" or `DESC` for "descending." Let's try to select all of our cats and sort them by age in descending order. 
 
 ```sql
 sqlite> SELECT * FROM cats ORDER BY age DESC;
@@ -209,7 +213,7 @@ Patches
 
 ### NULL
 
-Let's say the adminstrator of our Pets Database has found a new cat. Maybe this person runs an animal shelter, maybe this person is a crazy cat lady, either way, our admin has found an abandoned kitty. This kitty doesn't have a name yet, but should be added to our database right away. We can add data with missing values using the `NULL` keyword. 
+Let's say the adminstrator of our Pets Database has found a new cat. This kitty doesn't have a name yet, but should be added to our database right away. We can add data with missing values using the `NULL` keyword. 
 
 Let's insert our new cat into the database. Our abandoned kitty has a breed, but no name or age as of yet: 
 
@@ -235,7 +239,7 @@ We can even select the mysterious, nameless kitty with the following query:
 ```sql
 SELECT * FROM cats WHERE name IS NULL;
 ```
-Thi should return the following: 
+This should return the following: 
 
 ```bash
 id          name        age         breed       owner_id  
