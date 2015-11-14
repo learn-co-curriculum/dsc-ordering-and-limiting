@@ -38,32 +38,34 @@ In this exercise, we'll walk through executing a handful of common and handy SQL
 
 ## Code Along: SQL Queries
 
-### Preparing our Database
+### Creating our Database
 
-**Creating the Database:**
+In this code along, we'll be creating a `cats` table in a `pets_database.db`. So, let's navigate to our terminal and get started.
 
-We'll use  `pets_database.db` with a `cats` table. Create the database in your terminal with the following: 
+First let's create our `pets_database` by running the following command.
 
 ```bash
-sqlite3 pets_database.db 
+sqlite3 pets_database.db
 ```
 
-**Creating the table:**
+Good work. Let's type `ls` in the terminal and see what just happened. A new file should appear called `pets_database.db`! This is the binary representation of the database. You can think of this like a .jpg file. It won't open up in a text editor, but it does open up in the image viewer app. It is the same way for .db files. They won't open in your editor, but they can be read by the appropriate database engine.
 
-In the `sqlite3>` prompt in your terminal:
+Now that we have a database, let's create our `cats` table along with `id`, `name`, `age`, `breed`, and `owner_id` columns.
 
 ```sql
-CREATE TABLE cats (
-name TEXT,
-age INTEGER,
-breed TEXT
-);
+	CREATE TABLE cats (
+	 	id INTEGER PRIMARY KEY,
+	 	name TEXT,
+	 	age INTEGER,
+	 	breed TEXT,
+	 	owner_id INTEGER
+	);
 ```
 
-Add the following rows into your table. 
+Let's add some cats to our `cats` table to make this more interesting: 
 
 ```sql
-sqlite> INSERT INTO cats (name. age. breed, owner_id) VALUES ("Maru", 3,"Scottish Fold", 1);
+sqlite> INSERT INTO cats (name, age, breed, owner_id) VALUES ("Maru", 3 , "Scottish Fold", 1);
 sqlite> INSERT INTO cats (name, age, breed, owner_id) VALUES ("Hana", 1 , "Tabby", 1);
 sqlite> INSERT INTO cats (name, age, breed) VALUES ("Lil' Bub", 5, "American Shorthair");
 sqlite> INSERT INTO cats (name, age, breed) VALUES ("Moe", 10, "Tabby");
@@ -90,6 +92,7 @@ This should return:
 
 ```sql
 .header on       # output the name of each column
+.mode column     # now we are in column mode, enabling us to run the next two .width commands
 .width auto      # adjusts and normalizes column width
 # or
 .width NUM1, NUM2 # customize column width
@@ -267,3 +270,55 @@ COUNT(owner_id)
 ---------------
 2
 ``` 
+
+###Note on `SELECT`
+
+We are now familiar with this syntax:
+
+```sql
+SELECT name FROM cats;
+```
+
+However, you may not know that this can be written like this as well:
+
+```sql
+SELECT cats.name FROM cats;
+```
+
+Both return:
+
+```bash
+name      
+----------
+Maru      
+Hana
+Lil' Bub
+Moe
+Patches    
+```
+
+SQLite allows us to explicitly state the tableName.columnName we want to select. This is particularly useful when we want data from two different tables.
+
+Imagine we have another table called `dogs` with a column for the dog names:
+
+```sql
+	CREATE TABLE dogs (
+      id INTEGER PRIMARY KEY,
+      name TEXT,
+   );
+```
+
+```sql
+	sqlite> INSERT INTO dogs (name) VALUES ("Clifford");
+```
+
+
+If we want to get the names of all the dogs and cats, we can no longer run a query with just the column name.
+`SELECT name FROM cats,dogs;` will return `Error: ambiguous column name: name`.
+
+Instead, we must explicitly follow the tableName.columnName syntax.
+```sql
+SELECT cats.name, dogs.name FROM cats, dogs;
+```
+
+You may see this in the future. Don't let it trip you up.
