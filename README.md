@@ -304,7 +304,7 @@ Imagine we have another table called `dogs` with a column for the dog names:
 ```sql
 	CREATE TABLE dogs (
       id INTEGER PRIMARY KEY,
-      name TEXT,
+      name TEXT
    );
 ```
 
