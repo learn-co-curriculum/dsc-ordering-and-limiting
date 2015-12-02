@@ -322,3 +322,5 @@ SELECT cats.name, dogs.name FROM cats, dogs;
 ```
 
 You may see this in the future. Don't let it trip you up.
+
+<a href='https://learn.co/lessons/sql-queries-basic-readme' data-visibility='hidden'>View this lesson on Learn.co</a>
