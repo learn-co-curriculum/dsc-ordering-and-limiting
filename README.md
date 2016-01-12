@@ -16,7 +16,7 @@ In this lesson, we'll cover how to write SQL queries to retrieve and add specifi
 
 ## What is a SQL Query?
 
-The term "query" refers to any SQL statement that retrieve data from your database. In fact, we've already written a number of SQL queries using basic `SELECT` statements. We've already seen how to retrieve single units of data, or rows, with queries like these: 
+The term "query" refers to any SQL statement that retrieves data from your database. In fact, we've already written a number of SQL queries using basic `SELECT` statements. We've already seen how to retrieve single units of data, or rows, with queries like these: 
 
 To select all of the rows from a `cats` table:
 
