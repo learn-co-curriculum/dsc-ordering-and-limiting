@@ -166,7 +166,7 @@ What if we want the oldest cat? If we want to select extremes from a database ta
 SELECT * FROM cats ORDER BY age DESC LIMIT 1;
 ```
 
-This part of the statement: `SELECT * FROM cats ORDER BY age DESC LIMIT 1;` returns all of the cats in order from oldest to youngest. Setting a `LIMIT` of `1` returns just the first, i.e. oldest, cat on the list. 
+This part of the statement: `SELECT * FROM cats ORDER BY age DESC` returns all of the cats in order from oldest to youngest. Setting a `LIMIT` of `1` returns just the first, i.e. oldest, cat on the list. 
 
 Execute the above statement in your terminal and you should see: 
 
