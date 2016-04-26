@@ -251,7 +251,7 @@ id          name        age         breed       owner_id
 
 Now, we'll talk about a SQL aggregate function, `COUNT`.
 
-**SQL aggregate functions** are SQL statements that retrieve minimum and maximum values from a column, sum values in a column, get the average of a column's values, or count a number of records that meet a certain conditions. You can learn more about the these SQL aggregators [here](http://www.sqlclauses.com/sql+aggregate+functions) and [here](http://zetcode.com/db/sqlite/select/).
+**SQL aggregate functions** are SQL statements that retrieve minimum and maximum values from a column, sum values in a column, get the average of a column's values, or count a number of records that meet a certain conditions. You can learn more about these SQL aggregators [here](http://www.sqlclauses.com/sql+aggregate+functions) and [here](http://zetcode.com/db/sqlite/select/).
 
 For now, we'll just focus on `COUNT`. `COUNT` will count the number of records that meet certain condition. Here's a standard SQL query using `COUNT`:
 
@@ -380,3 +380,5 @@ SELECT cats.name, dogs.name FROM cats, dogs;
 You may see this in the future. Don't let it trip you up.
 
 <p data-visibility='hidden'>View <a href='https://learn.co/lessons/sql-queries-basic-readme' title='Basic SQL Queries'>Basic SQL Queries</a> on Learn.co and start learning to code for free.</p>
+
+<p class='util--hide'>View <a href='https://learn.co/lessons/sql-queries-basic-readme'>Basic SQL Queries</a> on Learn.co and start learning to code for free.</p>
