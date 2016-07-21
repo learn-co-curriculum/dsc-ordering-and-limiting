@@ -12,7 +12,8 @@ In this lesson, we'll cover how to write SQL queries to retrieve and add specifi
 4. Use the `LIMIT` modifier to determine the number of records to retrieve from a dataset
 5. Use the `BETWEEN` modifier to retrieve a specific data set between two ranges
 6. Use the `NULL` data type keyword to insert new records into a table
-7. Use the `COUNT` function to  count the number of records that meet a certain condition
+7. Use the `COUNT` function to count the number of records that meet a certain condition
+8. Use the `GROUP BY` function to group your results according to the values in a given column
 
 ## What is a SQL Query?
 
