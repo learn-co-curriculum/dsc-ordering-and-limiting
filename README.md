@@ -12,7 +12,8 @@ In this lesson, we'll cover how to write SQL queries to retrieve and add specifi
 4. Use the `LIMIT` modifier to determine the number of records to retrieve from a dataset
 5. Use the `BETWEEN` modifier to retrieve a specific data set between two ranges
 6. Use the `NULL` data type keyword to insert new records into a table
-7. Use the `COUNT` function to  count the number of records that meet a certain condition
+7. Use the `COUNT` function to count the number of records that meet a certain condition
+8. Use the `GROUP BY` function to group your results according to the values in a given column
 
 ## What is a SQL Query?
 
@@ -53,13 +54,13 @@ Good work. Let's type `ls` in the terminal and see what just happened. A new fil
 Now that we have a database, let's create our `cats` table along with `id`, `name`, `age`, `breed`, and `owner_id` columns.
 
 ```sql
-	CREATE TABLE cats (
-	 	id INTEGER PRIMARY KEY,
-	 	name TEXT,
-	 	age INTEGER,
-	 	breed TEXT,
-	 	owner_id INTEGER
-	);
+CREATE TABLE cats (
+	id INTEGER PRIMARY KEY,
+	name TEXT,
+	age INTEGER,
+	breed TEXT,
+	owner_id INTEGER
+);
 ```
 
 Let's add some cats to our `cats` table to make this more interesting:
@@ -67,12 +68,12 @@ Let's add some cats to our `cats` table to make this more interesting:
 ```sql
 sqlite> INSERT INTO cats (name, age, breed, owner_id) VALUES ("Maru", 3 , "Scottish Fold", 1);
 sqlite> INSERT INTO cats (name, age, breed, owner_id) VALUES ("Hana", 1 , "Tabby", 1);
-sqlite> INSERT INTO cats (name, age, breed) VALUES ("Lil' Bub", 5, "American Shorthair");
+sqlite> INSERT INTO cats (name, age, breed) VALUES ("Lil\' Bub", 5, "American Shorthair");
 sqlite> INSERT INTO cats (name, age, breed) VALUES ("Moe", 10, "Tabby");
 sqlite> INSERT INTO cats (name, age, breed) VALUES ("Patches", 2, "Calico");
 ```
 
-Let's checkout our `cats` table now:
+Let's check out our `cats` table now:
 
 ```sql
 sqlite> SELECT * FROM cats;
@@ -83,7 +84,7 @@ This should return:
 ```bash
 1|Maru|3|Scottish Fold|1
 2|Hana|1|Tabby|1
-3|Lil' Bub|5|American Shorthair|
+3|Lil\' Bub|5|American Shorthair|
 4|Moe|10|Tabby|
 5|Patches|2|Calico|
 ```
@@ -101,13 +102,13 @@ This should return:
 Run the first two commands and then execute the above `SELECT` statement instead and you should see something like this:
 
 ```bash
-id  name        age    breed          owner_id
---  ----------  -----  -------------  ----------
-1   Maru        3      Scottish Fold  1
-2   Hana        1      Tabby          1
-3   Lil' Bub    5      American Shor
-4   Moe         10     Tabby
-5   Patches     2      Calico
+id          name        age         breed          owner_id  
+----------  ----------  ----------  -------------  ----------
+1           Maru        3           Scottish Fold  1         
+2           Hana        1           Tabby          1         
+3           Lil\' Bub   5           American Shor            
+4           Moe         10          Tabby                    
+5           Patches     2           Calico                   
 ```
 
 Much better.
@@ -130,13 +131,13 @@ sqlite> SELECT * FROM cats ORDER BY age;
 This should return the following:
 
 ```bash
-id  name        age    breed       owner_id
---  ----------  -----  ----------  ----------
-2   Hana        1      Tabby       1
-5   Patches     2      Calico
-1   Maru        3      Scottish F  1
-3   Lil' Bub    5      American S
-4   Moe         10     Tabby
+id          name        age         breed       owner_id  
+----------  ----------  ----------  ----------  ----------
+2           Hana        1           Tabby       1         
+5           Patches     2           Calico                
+1           Maru        3           Scottish F  1         
+3           Lil\' Bub   5           American S            
+4           Moe         10          Tabby                 
 ```
 When using `ORDER BY`, the default is to order in ascending order. If we want to specify though, we can use `ASC` for "ascending" or `DESC` for "descending." Let's try to select all of our cats and sort them by age in descending order.
 
@@ -147,13 +148,13 @@ sqlite> SELECT * FROM cats ORDER BY age DESC;
 This should return
 
 ```bash
-id  name        age    breed       owner_id
---  ----------  -----  ----------  ----------
-4   Moe         10     Tabby
-3   Lil' Bub    5      American S
-1   Maru        3      Scottish F  1
-5   Patches     2      Calico
-2   Hana        1      Tabby       1
+id          name        age         breed       owner_id  
+----------  ----------  ----------  ----------  ----------
+4           Moe         10          Tabby                 
+3           Lil\' Bub   5           American S            
+1           Maru        3           Scottish F  1         
+5           Patches     2           Calico                
+2           Hana        1           Tabby       1         
 ```
 
 ### `LIMIT`
@@ -171,9 +172,9 @@ This part of the statement: `SELECT * FROM cats ORDER BY age DESC` returns all o
 Execute the above statement in your terminal and you should see:
 
 ```bash
-id  name        age    breed       owner_id
---  ----------  -----  ----------  ----------
-4   Moe         10     Tabby
+id          name        age         breed       owner_id  
+----------  ----------  ----------  ----------  ----------
+4           Moe         10          Tabby                 
 ```
 Let's get the two oldest cats:
 
@@ -184,10 +185,10 @@ SELECT * FROM cats ORDER BY age DESC LIMIT 2;
 Execute that statement and you should see:
 
 ```bash
-id  name        age    breed       owner_id
---  ----------  -----  ----------  ----------
-4   Moe         10     Tabby
-3   Lil' Bub    5      American S
+id          name        age         breed       owner_id  
+----------  ----------  ----------  ----------  ----------
+4           Moe         10          Tabby                 
+3           Lil\' Bub   5           American S            
 ```
 
 ### `BETWEEN`
@@ -224,14 +225,14 @@ INSERT INTO cats (name, age, breed) VALUES (NULL, NULL, "Tabby");
 Now, if we look at our `cats` data with `SELECT * FROM cats;`, we should see:
 
 ```bash
-id          name        age         breed          owner_id
+id          name        age         breed          owner_id  
 ----------  ----------  ----------  -------------  ----------
-1           Maru        3           Scottish Fold  1
-2           Hana        1           Tabby          1
-3           Lil' Bub    5           American Shor
-4           Moe         10          Tabby
-5           Patches     2           Calico
-6                                   Tabby
+1           Maru        3           Scottish Fold  1         
+2           Hana        1           Tabby          1         
+3           Lil\' Bub   5           American Shor            
+4           Moe         10          Tabby                    
+5           Patches     2           Calico                   
+6                                   Tabby                    
 ```
 
 We can even select the mysterious, nameless kitty with the following query:
@@ -242,16 +243,16 @@ SELECT * FROM cats WHERE name IS NULL;
 This should return the following:
 
 ```bash
-id          name        age         breed       owner_id
+id          name        age         breed       owner_id  
 ----------  ----------  ----------  ----------  ----------
-6                                   Tabby
+6                                   Tabby                 
 ```
 
 ### `COUNT`
 
 Now, we'll talk about a SQL aggregate function, `COUNT`.
 
-**SQL aggregate functions** are SQL statements that retrieve minimum and maximum values from a column, sum values in a column, get the average of a column's values, or count a number of records that meet a certain conditions. You can learn more about these SQL aggregators [here](http://www.sqlclauses.com/sql+aggregate+functions) and [here](http://zetcode.com/db/sqlite/select/).
+**SQL aggregate functions** are SQL statements that retrieve minimum and maximum values from a column, sum values in a column, get the average of a column's values, or count a number of records that meet certain conditions. You can learn more about these SQL aggregators [here](http://www.sqlclauses.com/sql+aggregate+functions) and [here](http://zetcode.com/db/sqlite/select/).
 
 For now, we'll just focus on `COUNT`. `COUNT` will count the number of records that meet certain condition. Here's a standard SQL query using `COUNT`:
 
@@ -268,7 +269,7 @@ This should return:
 ```bash
 COUNT(owner_id)
 ---------------
-2
+2              
 ```
 
 
@@ -280,16 +281,17 @@ suggests, it groups your results by a given column.
 Let's take our table of cats
 
 ```bash
-id          name        age         breed          owner_id
+id          name        age         breed          owner_id  
 ----------  ----------  ----------  -------------  ----------
-1           Maru        3           Scottish Fold  1
-2           Hana        1           Tabby          1
-3           Lil' Bub    5           American Shor
-4           Moe         10          Tabby
-5           Patches     2           Calico
+1           Maru        3           Scottish Fold  1         
+2           Hana        1           Tabby          1         
+3           Lil\' Bub   5           American Shor            
+4           Moe         10          Tabby                    
+5           Patches     2           Calico                   
+6                                   Tabby                    
 ```
 
-Here, we can see at a glance that there are two tabby cats and
+Here, we can see at a glance that there are three tabby cats and
 one of every other breed — but what if we had a larger database
 where we couldn't just tally up the number of cats *grouped by*
 breed? That's where — you guessed it! — `GROUP BY` comes in handy.
@@ -303,10 +305,10 @@ This should return
 ``` bash
 breed               COUNT(breed)
 ------------------  ------------
-American Shorthair  1
-Calico              1
-Scottish Fold       1
-Tabby               2
+American Shorthair  1           
+Calico              1           
+Scottish Fold       1           
+Tabby               3           
 ```
 
 GROUP BY is a great function for aggregating results into different
@@ -319,11 +321,11 @@ SELECT breed, owner_id, COUNT(breed) FROM cats GROUP BY breed, owner_id;
 ``` bash
 breed               owner_id    COUNT(breed)
 ------------------  ----------  ------------
-American Shorthair              1
-Calico                          1
-Scottish Fold       1           1
-Tabby                           1
-Tabby               1           1
+American Shorthair              1           
+Calico                          1           
+Scottish Fold       1           1           
+Tabby                           2           
+Tabby               1           1           
 ```
 
 
@@ -344,13 +346,14 @@ SELECT cats.name FROM cats;
 Both return:
 
 ```bash
-name
+name      
 ----------
-Maru
-Hana
-Lil' Bub
-Moe
-Patches
+Maru      
+Hana      
+Lil\' Bub 
+Moe       
+Patches   
+          
 ```
 
 SQLite allows us to explicitly state the tableName.columnName we want to select. This is particularly useful when we want data from two different tables.
@@ -358,14 +361,14 @@ SQLite allows us to explicitly state the tableName.columnName we want to select.
 Imagine we have another table called `dogs` with a column for the dog names:
 
 ```sql
-	CREATE TABLE dogs (
-      id INTEGER PRIMARY KEY,
-      name TEXT
-   );
+CREATE TABLE dogs (
+	id INTEGER PRIMARY KEY,
+	name TEXT
+);
 ```
 
 ```sql
-	sqlite> INSERT INTO dogs (name) VALUES ("Clifford");
+sqlite> INSERT INTO dogs (name) VALUES ("Clifford");
 ```
 
 
@@ -380,5 +383,3 @@ SELECT cats.name, dogs.name FROM cats, dogs;
 You may see this in the future. Don't let it trip you up.
 
 <p data-visibility='hidden'>View <a href='https://learn.co/lessons/sql-queries-basic-readme' title='Basic SQL Queries'>Basic SQL Queries</a> on Learn.co and start learning to code for free.</p>
-
-<p class='util--hide'>View <a href='https://learn.co/lessons/sql-queries-basic-readme'>Basic SQL Queries</a> on Learn.co and start learning to code for free.</p>
