@@ -214,7 +214,7 @@ Patches
 
 ### NULL
 
-Let's say the adminstrator of our Pets Database has found a new cat. This kitty doesn't have a name yet, but should be added to our database right away. We can add data with missing values using the `NULL` keyword.
+Let's say the administrator of our Pets Database has found a new cat. This kitty doesn't have a name yet, but should be added to our database right away. We can add data with missing values using the `NULL` keyword.
 
 Let's insert our new cat into the database. Our abandoned kitty has a breed, but no name or age as of yet:
 
@@ -383,3 +383,5 @@ SELECT cats.name, dogs.name FROM cats, dogs;
 You may see this in the future. Don't let it trip you up.
 
 <p data-visibility='hidden'>View <a href='https://learn.co/lessons/sql-queries-basic-readme' title='Basic SQL Queries'>Basic SQL Queries</a> on Learn.co and start learning to code for free.</p>
+
+<p class='util--hide'>View <a href='https://learn.co/lessons/sql-queries-basic-readme'>Basic SQL Queries</a> on Learn.co and start learning to code for free.</p>
