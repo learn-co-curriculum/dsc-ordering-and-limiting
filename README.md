@@ -35,7 +35,7 @@ What if, however, we wanted to select the oldest cat? Or all of the cats that do
 
 Data storage isn't very useful if we can't manipulate, view, and analyze that data. Luckily for us, SQL is actually a powerful tool for doing just that.
 
-In this exercise, we'll walk through executing a handful of common and handy SQL queries. If you want to take a deeper dive, however, feel free to check out the resources at the bottom of the page.
+In this exercise, we'll walk through executing a handful of common and handy SQL queries.
 
 ## Code Along: SQL Queries
 
