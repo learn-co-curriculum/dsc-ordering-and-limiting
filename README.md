@@ -1,19 +1,16 @@
-# Basic SQL Queries
 
-## Overview
+# Filtering and Ordering
+
+## Introduction
 
 In this lesson, we'll cover how to write SQL queries to retrieve and add specific data to SQL database tables.
 
 ## Objectives
+You will be able to:
+* Limit the number of records returned by a query using `LIMIT`
+* Filter results using `BETWEEN` and `IS NULL`
+* Order the results of your queries by using `ORDER BY` (`ASC` & `DESC`)
 
-1. Define a query as an SQL statement that retrieves data from a database
-2. Use the `ORDER BY`modifier to order tables by specific `SELECT` statements
-3. Use the `ASC` and `DESC` modifier to sort queries in ascending and descending orders
-4. Use the `LIMIT` modifier to determine the number of records to retrieve from a dataset
-5. Use the `BETWEEN` modifier to retrieve a specific data set between two ranges
-6. Use the `NULL` data type keyword to insert new records into a table
-7. Use the `COUNT` function to count the number of records that meet a certain condition
-8. Use the `GROUP BY` function to group your results according to the values in a given column
 
 ## What is a SQL Query?
 
@@ -41,120 +38,120 @@ In this exercise, we'll walk through executing a handful of common and handy SQL
 
 ### Creating our Database
 
-In this code along, we'll be creating a `cats` table in a `pets_database.db`. So, let's navigate to our terminal and get started.
+In this code along, we'll be creating a `cats` table in a `pets_database.db`.
 
-First let's create our `pets_database` by running the following command.
+First let's create our `pets_database` by running the following commands.
 
-```bash
-sqlite3 pets_database.db
+```python
+import sqlite3 
+connection = sqlite3.connect('pets_database.db')
+cursor = connection.cursor()
 ```
 
-Now that we have a database, let's create our `cats` table along with `id`, `name`, `age`, `breed`, and `owner_id` columns.
 
-```sql
-CREATE TABLE cats (
-	id INTEGER PRIMARY KEY,
-	name TEXT,
-	age INTEGER,
-	breed TEXT,
-	owner_id INTEGER
-);
+```python
+# create database connection here
 ```
 
-Good work. Let's type `ls` in the terminal and see what just happened. A new file should appear called `pets_database.db`! This is the binary representation of the database. You can think of this like a .jpg file. It won't open up in a text editor, but it does open up in the image viewer app. It is the same way for .db files. They won't open in your editor, but they can be read by the appropriate database engine.
+Good work. Now if we look at our file directory, a new file should have appeared called `pets_database.db`! This is the binary representation of the database. You can think of this like a .jpg file. It won't open up in a text editor, but it does open up in the image viewer app. It is the same way for .db files. They won't open in your editor, but they can be read by the appropriate database engine.
+
+Now that we have a database and a cursor object that is connected to our database, let's create our `cats` table along with `id`, `name`, `age`, `breed`, and `owner_id` columns.
+
+```python
+cursor.execute('''CREATE TABLE cats ( id INTEGER PRIMARY KEY, name TEXT, age INTEGER, breed TEXT, owner_id INTEGER );''')
+```
+
+
+```python
+# create table here
+```
 
 Let's add some cats to our `cats` table to make this more interesting:
 
-```sql
-sqlite> INSERT INTO cats (name, age, breed, owner_id) VALUES ("Maru", 3 , "Scottish Fold", 1);
-sqlite> INSERT INTO cats (name, age, breed, owner_id) VALUES ("Hana", 1 , "Tabby", 1);
-sqlite> INSERT INTO cats (name, age, breed) VALUES ("Lil\' Bub", 5, "American Shorthair");
-sqlite> INSERT INTO cats (name, age, breed) VALUES ("Moe", 10, "Tabby");
-sqlite> INSERT INTO cats (name, age, breed) VALUES ("Patches", 2, "Calico");
+```python
+cursor.execute('''INSERT INTO cats (name, age, breed, owner_id) VALUES ("Maru", 3 , "Scottish Fold", 1);''')
+cursor.execute('''INSERT INTO cats (name, age, breed, owner_id) VALUES ("Hana", 1 , "Tabby", 1);''')
+cursor.execute('''INSERT INTO cats (name, age, breed) VALUES ("Lil\' Bub", 5, "American Shorthair");''')
+cursor.execute('''INSERT INTO cats (name, age, breed) VALUES ("Moe", 10, "Tabby");''')
+cursor.execute('''INSERT INTO cats (name, age, breed) VALUES ("Patches", 2, "Calico");''')
+```
+
+
+```python
+# insert data here
 ```
 
 Let's check out our `cats` table now:
 
-```sql
-sqlite> SELECT * FROM cats;
+```python
+cursor.execute('''SELECT * FROM cats;''').fetchall()
+```
+
+> **Note:** the method `.fetchall()` returns a `list` where each record is represented as a `tuple`, which you can think of as a `list`-like object. If we would like to retrieve an element from a `tuple`, we simply access it by-index -- similar to how we access the elements of a normal Python list. (i.e. `example_tuple[0]` - returns element at index `0`)
+
+
+```python
+# select all data from cats data here
 ```
 
 This should return:
 
-```bash
-1|Maru|3|Scottish Fold|1
-2|Hana|1|Tabby|1
-3|Lil\' Bub|5|American Shorthair|
-4|Moe|10|Tabby|
-5|Patches|2|Calico|
+```python
+[(1, 'Maru', 3, 'Scottish Fold', 1),
+ (2, 'Hana', 1, 'Tabby', 1),
+ (3, "Lil' Bub", 5, 'American Shorthair', None),
+ (4, 'Moe', 10, 'Tabby', None),
+ (5, 'Patches', 2, 'Calico', None)]
 ```
-
-**Top-Tip:** You can format the output of your select statements with a few helpful options:
-
-```sql
-.headers on       # output the name of each column
-.mode column     # now we are in column mode, enabling us to run the next two .width commands
-.width auto      # adjusts and normalizes column width
-# or
-.width NUM1, NUM2 # customize column width
-```
-
-Run the first two commands and then execute the above `SELECT` statement instead and you should see something like this:
-
-```bash
-id          name        age         breed          owner_id  
-----------  ----------  ----------  -------------  ----------
-1           Maru        3           Scottish Fold  1         
-2           Hana        1           Tabby          1         
-3           Lil\' Bub   5           American Shor            
-4           Moe         10          Tabby                    
-5           Patches     2           Calico                   
-```
-
-Much better.
-
 
 ### `ORDER BY`
 
 The first query modifier we'll explore is `ORDER BY`. This modifier allows us to order the table rows returned by a certain `SELECT` statement. Here's a boilerplate `SELECT` statement that uses `ORDER BY`:
 
-```sql
-SELECT column_name FROM table_name ORDER BY column_name ASC|DESC;
+```python
+cursor.execute('''SELECT column_name FROM table_name ORDER BY column_name ASC|DESC;''').fetchall()
 ```
 
 Let's select our cats and order them by age:
 
-```sql
-sqlite> SELECT * FROM cats ORDER BY age;
+```python
+cursor.execute('''SELECT * FROM cats ORDER BY age;''').fetchall()
+```
+
+
+```python
+# select all cats order by age here
 ```
 
 This should return the following:
 
-```bash
-id          name        age         breed       owner_id  
-----------  ----------  ----------  ----------  ----------
-2           Hana        1           Tabby       1         
-5           Patches     2           Calico                
-1           Maru        3           Scottish F  1         
-3           Lil\' Bub   5           American S            
-4           Moe         10          Tabby                 
+```python
+[(2, 'Hana', 1, 'Tabby', 1),
+ (5, 'Patches', 2, 'Calico', None),
+ (1, 'Maru', 3, 'Scottish Fold', 1),
+ (3, "Lil' Bub", 5, 'American Shorthair', None),
+ (4, 'Moe', 10, 'Tabby', None)]             
 ```
+
 When using `ORDER BY`, the default is to order in ascending order. If we want to specify though, we can use `ASC` for "ascending" or `DESC` for "descending." Let's try to select all of our cats and sort them by age in descending order.
 
-```sql
-sqlite> SELECT * FROM cats ORDER BY age DESC;
+```python
+cursor.execute('''SELECT * FROM cats ORDER BY age DESC;''').fetchall()
+```
+
+
+```python
+# select cats order by age descending here
 ```
 
 This should return
 
-```bash
-id          name        age         breed       owner_id  
-----------  ----------  ----------  ----------  ----------
-4           Moe         10          Tabby                 
-3           Lil\' Bub   5           American S            
-1           Maru        3           Scottish F  1         
-5           Patches     2           Calico                
-2           Hana        1           Tabby       1         
+```python
+[(4, 'Moe', 10, 'Tabby', None),
+ (3, "Lil' Bub", 5, 'American Shorthair', None),
+ (1, 'Maru', 3, 'Scottish Fold', 1),
+ (5, 'Patches', 2, 'Calico', None),
+ (2, 'Hana', 1, 'Tabby', 1)]        
 ```
 
 ### `LIMIT`
@@ -167,14 +164,21 @@ What if we want the oldest cat? If we want to select extremes from a database ta
 SELECT * FROM cats ORDER BY age DESC LIMIT 1;
 ```
 
+> **Note:** When we would only like the first result (or one result as is the case in the example above) we can use the sqlite3 method `.fetchone()` which, instead of returning a list of results, returns the first result (or the record at index 0). We can use this in-place of or in conjunction with `LIMIT 1` in order to get back a single element.
+
+
+```python
+cursor.execute('''SELECT * FROM cats ORDER BY age DESC LIMIT 1;''').fetchone()
+# OR
+# cursor.execute('''SELECT * FROM cats ORDER BY age DESC;''').fetchone() # returns the same element as the above
+```
+
 This part of the statement: `SELECT * FROM cats ORDER BY age DESC` returns all of the cats in order from oldest to youngest. Setting a `LIMIT` of `1` returns just the first, i.e. oldest, cat on the list.
 
-Execute the above statement in your terminal and you should see:
+Execute the above statement and you should see:
 
-```bash
-id          name        age         breed       owner_id  
-----------  ----------  ----------  ----------  ----------
-4           Moe         10          Tabby                 
+```python
+(4, 'Moe', 10, 'Tabby', None)            
 ```
 Let's get the two oldest cats:
 
@@ -182,13 +186,15 @@ Let's get the two oldest cats:
 SELECT * FROM cats ORDER BY age DESC LIMIT 2;
 ```
 
+
+```python
+# select the two oldest cats here
+```
+
 Execute that statement and you should see:
 
-```bash
-id          name        age         breed       owner_id  
-----------  ----------  ----------  ----------  ----------
-4           Moe         10          Tabby                 
-3           Lil\' Bub   5           American S            
+```python
+[(4, 'Moe', 10, 'Tabby', None), (3, "Lil' Bub", 5, 'American Shorthair', None)]          
 ```
 
 ### `BETWEEN`
@@ -204,12 +210,16 @@ Let's try it out on our `cats` table:
 ```sql
 SELECT name FROM cats WHERE age BETWEEN 1 AND 3;
 ```
+
+
+```python
+# find all records between ages 1 and three here
+```
+
 This should return:
 
-```bash
-Maru
-Hana
-Patches
+```python
+[('Maru',), ('Hana',), ('Patches',)]
 ```
 
 ### NULL
@@ -222,17 +232,21 @@ Let's insert our new cat into the database. Our abandoned kitty has a breed, but
 INSERT INTO cats (name, age, breed) VALUES (NULL, NULL, "Tabby");
 ```
 
+
+```python
+# insert new record here
+# retrieve all records from the cat table here
+```
+
 Now, if we look at our `cats` data with `SELECT * FROM cats;`, we should see:
 
-```bash
-id          name        age         breed          owner_id  
-----------  ----------  ----------  -------------  ----------
-1           Maru        3           Scottish Fold  1         
-2           Hana        1           Tabby          1         
-3           Lil\' Bub   5           American Shor            
-4           Moe         10          Tabby                    
-5           Patches     2           Calico                   
-6                                   Tabby                    
+```python
+[(1, 'Maru', 3, 'Scottish Fold', 1),
+ (2, 'Hana', 1, 'Tabby', 1),
+ (3, "Lil' Bub", 5, 'American Shorthair', None),
+ (4, 'Moe', 10, 'Tabby', None),
+ (5, 'Patches', 2, 'Calico', None),
+ (6, None, None, 'Tabby', None)]                  
 ```
 
 We can even select the mysterious, nameless kitty with the following query:
@@ -240,12 +254,16 @@ We can even select the mysterious, nameless kitty with the following query:
 ```sql
 SELECT * FROM cats WHERE name IS NULL;
 ```
+
+
+```python
+# select cats where the name field is null here
+```
+
 This should return the following:
 
-```bash
-id          name        age         breed       owner_id  
-----------  ----------  ----------  ----------  ----------
-6                                   Tabby                 
+```python
+[(6, None, None, 'Tabby', None)]
 ```
 
 ### `COUNT`
@@ -264,14 +282,17 @@ Let's try it out and count the number of cats who have an `owner_id` of `1`:
 ```sql
 SELECT COUNT(owner_id) FROM cats WHERE owner_id = 1;
 ```
-This should return:
 
-```bash
-COUNT(owner_id)
----------------
-2              
+
+```python
+# retrieve the count of cats whose owner id = 1 here
 ```
 
+This should return:
+
+```python
+(2,)
+```
 
 ### `GROUP BY`
 
@@ -300,15 +321,15 @@ breed? That's where — you guessed it! — `GROUP BY` comes in handy.
 SELECT breed, COUNT(breed) FROM cats GROUP BY breed;
 ```
 
+
+```python
+# execute GROUP BY sql statement here
+```
+
 This should return
 
-``` bash
-breed               COUNT(breed)
-------------------  ------------
-American Shorthair  1           
-Calico              1           
-Scottish Fold       1           
-Tabby               3           
+```python
+[('American Shorthair', 1), ('Calico', 1), ('Scottish Fold', 1), ('Tabby', 3)]
 ```
 
 GROUP BY is a great function for aggregating results into different
@@ -318,16 +339,20 @@ segments — you can even use it on multiple columns!
 SELECT breed, owner_id, COUNT(breed) FROM cats GROUP BY breed, owner_id;
 ```
 
-``` bash
-breed               owner_id    COUNT(breed)
-------------------  ----------  ------------
-American Shorthair              1           
-Calico                          1           
-Scottish Fold       1           1           
-Tabby                           2           
-Tabby               1           1           
+
+```python
+# execute multiple column group by statement here
 ```
 
+This should return:
+
+```python
+[('American Shorthair', None, 1),
+ ('Calico', None, 1),
+ ('Scottish Fold', 1, 1),
+ ('Tabby', None, 2),
+ ('Tabby', 1, 1)]
+```
 
 ### Note on `SELECT`
 
@@ -345,15 +370,8 @@ SELECT cats.name FROM cats;
 
 Both return:
 
-```bash
-name      
-----------
-Maru      
-Hana      
-Lil\' Bub 
-Moe       
-Patches   
-          
+```python
+[('Maru',), ('Hana',), ("Lil' Bub",), ('Moe',), ('Patches',), (None,)] 
 ```
 
 SQLite allows us to explicitly state the tableName.columnName we want to select. This is particularly useful when we want data from two different tables.
@@ -368,7 +386,7 @@ CREATE TABLE dogs (
 ```
 
 ```sql
-sqlite> INSERT INTO dogs (name) VALUES ("Clifford");
+INSERT INTO dogs (name) VALUES ("Clifford");
 ```
 
 
@@ -385,3 +403,4 @@ You may see this in the future. Don't let it trip you up.
 <p class='util--hide'>View <a href='https://learn.co/lessons/sql-queries-basic-readme'>Basic SQL Queries</a> on Learn.co and start learning to code for free.</p>
 
 <p class='util--hide'>View <a href='https://learn.co/lessons/sql-queries-basic-readme'>Basic SQL Queries</a> on Learn.co and start learning to code for free.</p>
+
