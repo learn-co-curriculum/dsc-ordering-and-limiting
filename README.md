@@ -222,7 +222,7 @@ This should return:
 [('Maru',), ('Hana',), ('Patches',)]
 ```
 
-### NULL
+### `NULL`
 
 Let's say the administrator of our Pets Database has found a new cat. This kitty doesn't have a name yet, but should be added to our database right away. We can add data with missing values using the `NULL` keyword.
 
@@ -402,5 +402,7 @@ You may see this in the future. Don't let it trip you up.
 
 <p class='util--hide'>View <a href='https://learn.co/lessons/sql-queries-basic-readme'>Basic SQL Queries</a> on Learn.co and start learning to code for free.</p>
 
-<p class='util--hide'>View <a href='https://learn.co/lessons/sql-queries-basic-readme'>Basic SQL Queries</a> on Learn.co and start learning to code for free.</p>
+## Summary
 
+In this lesson, you expanded your SQL knowledge by learning how to modify your data using statements like `ORDER BY`. 
+Additionally, you learned how to filter and limit your results.
