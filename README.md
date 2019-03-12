@@ -3,7 +3,7 @@
 
 ## Introduction
 
-In this lesson, we'll cover how to write SQL queries to retrieve and add specific data to SQL database tables.
+In this lesson, you'll continue to see how to write SQL queries to retrieve and add specific data to SQL database tables.
 
 ## Objectives
 You will be able to:
@@ -14,7 +14,7 @@ You will be able to:
 
 ## What is a SQL Query?
 
-The term "query" refers to any SQL statement that retrieves data from your database. In fact, we've already written a number of SQL queries using basic `SELECT` statements. We've already seen how to retrieve single units of data, or rows, with queries like these:
+The term "query" refers to any SQL statement that retrieves data from your database. In fact, you've already written a number of SQL queries using basic `SELECT` statements. You've already seen how to retrieve single units of data, or rows, with queries like these:
 
 To select all of the rows from a `cats` table:
 
@@ -28,24 +28,24 @@ To select only rows representing data meeting certain conditions:
 SELECT * FROM cats WHERE name = "Maru";
 ```
 
-What if, however, we wanted to select the oldest cat? Or all of the cats that don't currently belong to an owner? Or all of the cats with short names?
+What if, however, you wanted to select the oldest cat? Or all of the cats that don't currently belong to an owner? Or all of the cats with short names?
 
-Data storage isn't very useful if we can't manipulate, view, and analyze that data. Luckily for us, SQL is actually a powerful tool for doing just that.
+Data storage isn't very useful if you can't manipulate, view, and analyze that data. Luckily for us, SQL is actually a powerful tool for doing just that.
 
-In this exercise, we'll walk through executing a handful of common and handy SQL queries.
+In this exercise, you'll walk through executing a handful of common and handy SQL queries.
 
 ## Code Along: SQL Queries
 
 ### Creating our Database
 
-In this code along, we'll be creating a `cats` table in a `pets_database.db`.
+In this code along, you'll start by connecting to `pets_database.db`.
 
-First let's create our `pets_database` by running the following commands.
+Recall that you can do this by running the following commands:
 
 ```python
 import sqlite3 
-connection = sqlite3.connect('pets_database.db')
-cursor = connection.cursor()
+conn = sqlite3.connect('pets_database.db')
+c = conn.cursor()
 ```
 
 
@@ -53,41 +53,13 @@ cursor = connection.cursor()
 # create database connection here
 ```
 
-Good work. Now if we look at our file directory, a new file should have appeared called `pets_database.db`! This is the binary representation of the database. You can think of this like a .jpg file. It won't open up in a text editor, but it does open up in the image viewer app. It is the same way for .db files. They won't open in your editor, but they can be read by the appropriate database engine.
-
-Now that we have a database and a cursor object that is connected to our database, let's create our `cats` table along with `id`, `name`, `age`, `breed`, and `owner_id` columns.
-
-```python
-cursor.execute('''CREATE TABLE cats ( id INTEGER PRIMARY KEY, name TEXT, age INTEGER, breed TEXT, owner_id INTEGER );''')
-```
-
-
-```python
-# create table here
-```
-
-Let's add some cats to our `cats` table to make this more interesting:
-
-```python
-cursor.execute('''INSERT INTO cats (name, age, breed, owner_id) VALUES ("Maru", 3 , "Scottish Fold", 1);''')
-cursor.execute('''INSERT INTO cats (name, age, breed, owner_id) VALUES ("Hana", 1 , "Tabby", 1);''')
-cursor.execute('''INSERT INTO cats (name, age, breed) VALUES ("Lil\' Bub", 5, "American Shorthair");''')
-cursor.execute('''INSERT INTO cats (name, age, breed) VALUES ("Moe", 10, "Tabby");''')
-cursor.execute('''INSERT INTO cats (name, age, breed) VALUES ("Patches", 2, "Calico");''')
-```
-
-
-```python
-# insert data here
-```
-
 Let's check out our `cats` table now:
 
 ```python
-cursor.execute('''SELECT * FROM cats;''').fetchall()
+c.execute('''SELECT * FROM cats;''').fetchall()
 ```
 
-> **Note:** the method `.fetchall()` returns a `list` where each record is represented as a `tuple`, which you can think of as a `list`-like object. If we would like to retrieve an element from a `tuple`, we simply access it by-index -- similar to how we access the elements of a normal Python list. (i.e. `example_tuple[0]` - returns element at index `0`)
+> **Note:** the method `.fetchall()` returns a `list` where each record is represented as a `tuple`, which you can think of as a `list`-like object. If you would like to retrieve an element from a `tuple`, you simply access it by-index -- similar to how you access the elements of a normal Python list. (i.e. `example_tuple[0]` - returns element at index `0`)
 
 
 ```python
@@ -101,21 +73,22 @@ This should return:
  (2, 'Hana', 1, 'Tabby', 1),
  (3, "Lil' Bub", 5, 'American Shorthair', None),
  (4, 'Moe', 10, 'Tabby', None),
- (5, 'Patches', 2, 'Calico', None)]
+ (5, 'Patches', 2, 'Calico', None),
+ (6, None, None, 'Tabby', None)]
 ```
 
 ### `ORDER BY`
 
-The first query modifier we'll explore is `ORDER BY`. This modifier allows us to order the table rows returned by a certain `SELECT` statement. Here's a boilerplate `SELECT` statement that uses `ORDER BY`:
+The first query modifier you'll explore is `ORDER BY`. This modifier allows us to order the table rows returned by a certain `SELECT` statement. Here's a boilerplate `SELECT` statement that uses `ORDER BY`:
 
 ```python
-cursor.execute('''SELECT column_name FROM table_name ORDER BY column_name ASC|DESC;''').fetchall()
+c.execute('''SELECT column_name FROM table_name ORDER BY column_name ASC|DESC;''').fetchall()
 ```
 
 Let's select our cats and order them by age:
 
 ```python
-cursor.execute('''SELECT * FROM cats ORDER BY age;''').fetchall()
+c.execute('''SELECT * FROM cats ORDER BY age;''').fetchall()
 ```
 
 
@@ -126,17 +99,18 @@ cursor.execute('''SELECT * FROM cats ORDER BY age;''').fetchall()
 This should return the following:
 
 ```python
-[(2, 'Hana', 1, 'Tabby', 1),
+[(6, None, None, 'Tabby', None),
+ (2, 'Hana', 1, 'Tabby', 1),
  (5, 'Patches', 2, 'Calico', None),
  (1, 'Maru', 3, 'Scottish Fold', 1),
  (3, "Lil' Bub", 5, 'American Shorthair', None),
- (4, 'Moe', 10, 'Tabby', None)]             
+ (4, 'Moe', 10, 'Tabby', None)]            
 ```
 
-When using `ORDER BY`, the default is to order in ascending order. If we want to specify though, we can use `ASC` for "ascending" or `DESC` for "descending." Let's try to select all of our cats and sort them by age in descending order.
+When using `ORDER BY`, the default is to order in ascending order. If you want to specify though, you can use `ASC` for "ascending" or `DESC` for "descending." Let's try to select all of our cats and sort them by age in descending order.
 
 ```python
-cursor.execute('''SELECT * FROM cats ORDER BY age DESC;''').fetchall()
+c.execute('''SELECT * FROM cats ORDER BY age DESC;''').fetchall()
 ```
 
 
@@ -151,12 +125,13 @@ This should return
  (3, "Lil' Bub", 5, 'American Shorthair', None),
  (1, 'Maru', 3, 'Scottish Fold', 1),
  (5, 'Patches', 2, 'Calico', None),
- (2, 'Hana', 1, 'Tabby', 1)]        
+ (2, 'Hana', 1, 'Tabby', 1),
+ (6, None, None, 'Tabby', None)]      
 ```
 
 ### `LIMIT`
 
-What if we want the oldest cat? If we want to select extremes from a database table––for example, the employee with the highest paycheck or the patient with the most recent appointment––we can use `ORDER BY` in conjunction with `LIMIT`.
+What if you want the oldest cat? If you want to select extremes from a database table––for example, the employee with the highest paycheck or the patient with the most recent appointment––we can use `ORDER BY` in conjunction with `LIMIT`.
 
 `LIMIT` is used to determine the number of records you want to return from a dataset. For example:
 
@@ -164,13 +139,13 @@ What if we want the oldest cat? If we want to select extremes from a database ta
 SELECT * FROM cats ORDER BY age DESC LIMIT 1;
 ```
 
-> **Note:** When we would only like the first result (or one result as is the case in the example above) we can use the sqlite3 method `.fetchone()` which, instead of returning a list of results, returns the first result (or the record at index 0). We can use this in-place of or in conjunction with `LIMIT 1` in order to get back a single element.
+> **Note:** When you would only like the first result (or one result as is the case in the example above) you can use the sqlite3 method `.fetchone()` which, instead of returning a list of results, returns the first result (or the record at index 0). you can use this in-place of or in conjunction with `LIMIT 1` in order to get back a single element.
 
 
 ```python
-cursor.execute('''SELECT * FROM cats ORDER BY age DESC LIMIT 1;''').fetchone()
+c.execute('''SELECT * FROM cats ORDER BY age DESC LIMIT 1;''').fetchone()
 # OR
-# cursor.execute('''SELECT * FROM cats ORDER BY age DESC;''').fetchone() # returns the same element as the above
+# c.execute('''SELECT * FROM cats ORDER BY age DESC;''').fetchone() # returns the same element as the above
 ```
 
 This part of the statement: `SELECT * FROM cats ORDER BY age DESC` returns all of the cats in order from oldest to youngest. Setting a `LIMIT` of `1` returns just the first, i.e. oldest, cat on the list.
@@ -199,7 +174,7 @@ Execute that statement and you should see:
 
 ### `BETWEEN`
 
-As we've already established, being able to sort and select specific data sets is important. Continuing on with our example, let's say we urgently need to select all of the cats whose age is between 1 and 3. To create such a query, we can use `BETWEEN`. Here's an boilerplate `SELECT` statement using `BETWEEN`:
+As we've already established, being able to sort and select specific data sets is important. Continuing on with our example, let's say you urgently need to select all of the cats whose age is between 1 and 3. To create such a query, you can use `BETWEEN`. Here's an boilerplate `SELECT` statement using `BETWEEN`:
 
 ```sql
 SELECT column_name(s) FROM table_name WHERE column_name BETWEEN value1 AND value2;
@@ -224,35 +199,10 @@ This should return:
 
 ### `NULL`
 
-Let's say the administrator of our Pets Database has found a new cat. This kitty doesn't have a name yet, but should be added to our database right away. We can add data with missing values using the `NULL` keyword.
-
-Let's insert our new cat into the database. Our abandoned kitty has a breed, but no name or age as of yet:
+Some cats were added to the Database that weren't given a name. Find them with
 
 ```sql
-INSERT INTO cats (name, age, breed) VALUES (NULL, NULL, "Tabby");
-```
-
-
-```python
-# insert new record here
-# retrieve all records from the cat table here
-```
-
-Now, if we look at our `cats` data with `SELECT * FROM cats;`, we should see:
-
-```python
-[(1, 'Maru', 3, 'Scottish Fold', 1),
- (2, 'Hana', 1, 'Tabby', 1),
- (3, "Lil' Bub", 5, 'American Shorthair', None),
- (4, 'Moe', 10, 'Tabby', None),
- (5, 'Patches', 2, 'Calico', None),
- (6, None, None, 'Tabby', None)]                  
-```
-
-We can even select the mysterious, nameless kitty with the following query:
-
-```sql
-SELECT * FROM cats WHERE name IS NULL;
+select * from cats wehre Name is null;
 ```
 
 
@@ -268,11 +218,11 @@ This should return the following:
 
 ### `COUNT`
 
-Now, we'll talk about a SQL aggregate function, `COUNT`.
+Now, you'll talk about a SQL aggregate function, `COUNT`.
 
 **SQL aggregate functions** are SQL statements that retrieve minimum and maximum values from a column, sum values in a column, get the average of a column's values, or count a number of records that meet certain conditions. You can learn more about these SQL aggregators [here](http://www.sqlclauses.com/sql+aggregate+functions) and [here](http://zetcode.com/db/sqlite/select/).
 
-For now, we'll just focus on `COUNT`. `COUNT` will count the number of records that meet certain condition. Here's a standard SQL query using `COUNT`:
+For now, you'll just focus on `COUNT`. `COUNT` will count the number of records that meet certain condition. Here's a standard SQL query using `COUNT`:
 
 ```sql
  "SELECT COUNT([column name]) FROM [table name] WHERE [column name] = [value]"
@@ -296,7 +246,7 @@ This should return:
 
 ### `GROUP BY`
 
-Lastly, we'll talk about the handy aggregate function `GROUP BY`. Like its name
+Lastly, you'll talk about the handy aggregate function `GROUP BY`. Like its name
 suggests, it groups your results by a given column.
 
 Let's take our table of cats
@@ -312,9 +262,9 @@ id          name        age         breed          owner_id
 6                                   Tabby                    
 ```
 
-Here, we can see at a glance that there are three tabby cats and
-one of every other breed — but what if we had a larger database
-where we couldn't just tally up the number of cats *grouped by*
+Here, you can see at a glance that there are three tabby cats and
+one of every other breed — but what if you had a larger database
+where you couldn't just tally up the number of cats *grouped by*
 breed? That's where — you guessed it! — `GROUP BY` comes in handy.
 
 ``` sql
@@ -374,9 +324,9 @@ Both return:
 [('Maru',), ('Hana',), ("Lil' Bub",), ('Moe',), ('Patches',), (None,)] 
 ```
 
-SQLite allows us to explicitly state the tableName.columnName we want to select. This is particularly useful when we want data from two different tables.
+SQLite allows us to explicitly state the tableName.columnName you want to select. This is particularly useful when you want data from two different tables.
 
-Imagine we have another table called `dogs` with a column for the dog names:
+Imagine you have another table called `dogs` with a column for the dog names:
 
 ```sql
 CREATE TABLE dogs (
@@ -390,17 +340,15 @@ INSERT INTO dogs (name) VALUES ("Clifford");
 ```
 
 
-If we want to get the names of all the dogs and cats, we can no longer run a query with just the column name.
+If you want to get the names of all the dogs and cats, you can no longer run a query with just the column name.
 `SELECT name FROM cats,dogs;` will return `Error: ambiguous column name: name`.
 
-Instead, we must explicitly follow the tableName.columnName syntax.
+Instead, you must explicitly follow the tableName.columnName syntax.
 ```sql
 SELECT cats.name, dogs.name FROM cats, dogs;
 ```
 
 You may see this in the future. Don't let it trip you up.
-
-<p class='util--hide'>View <a href='https://learn.co/lessons/sql-queries-basic-readme'>Basic SQL Queries</a> on Learn.co and start learning to code for free.</p>
 
 ## Summary
 
