@@ -139,7 +139,7 @@ What if you want the oldest cat? If you want to select extremes from a database 
 SELECT * FROM cats ORDER BY age DESC LIMIT 1;
 ```
 
-> **Note:** When you would only like the first result (or one result as is the case in the example above) you can use the sqlite3 method `.fetchone()` which, instead of returning a list of results, returns the first result (or the record at index 0). you can use this in-place of or in conjunction with `LIMIT 1` in order to get back a single element.
+> **Note:** When you would only like the first result (or one result as is the case in the example above) you can use the sqlite3 method `.fetchone()` which, instead of returning a list of results, returns the first result (or the record at index 0). you can use this in place of or in conjunction with `LIMIT 1` in order to get back a single element.
 
 
 ```python
@@ -174,7 +174,7 @@ Execute that statement and you should see:
 
 ### `BETWEEN`
 
-As we've already established, being able to sort and select specific data sets is important. Continuing on with our example, let's say you urgently need to select all of the cats whose age is between 1 and 3. To create such a query, you can use `BETWEEN`. Here's an boilerplate `SELECT` statement using `BETWEEN`:
+As we've already established, being able to sort and select specific data sets is important. Continuing on with our example, let's say you urgently need to select all of the cats whose age is between 1 and 3. To create such a query, you can use `BETWEEN`. Here's a boilerplate `SELECT` statement using `BETWEEN`:
 
 ```sql
 SELECT column_name(s) FROM table_name WHERE column_name BETWEEN value1 AND value2;
@@ -202,7 +202,7 @@ This should return:
 Some cats were added to the Database that weren't given a name. Find them with
 
 ```sql
-select * from cats wehre Name is null;
+select * from cats where Name is null;
 ```
 
 
@@ -222,7 +222,7 @@ Now, you'll talk about a SQL aggregate function, `COUNT`.
 
 **SQL aggregate functions** are SQL statements that retrieve minimum and maximum values from a column, sum values in a column, get the average of a column's values, or count a number of records that meet certain conditions. You can learn more about these SQL aggregators [here](http://www.sqlclauses.com/sql+aggregate+functions) and [here](http://zetcode.com/db/sqlite/select/).
 
-For now, you'll just focus on `COUNT`. `COUNT` will count the number of records that meet certain condition. Here's a standard SQL query using `COUNT`:
+For now, you'll just focus on `COUNT`. `COUNT` will count the number of records that meet a certain condition. Here's a standard SQL query using `COUNT`:
 
 ```sql
  "SELECT COUNT([column name]) FROM [table name] WHERE [column name] = [value]"
