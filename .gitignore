@@ -32,7 +32,7 @@ jspm_packages
 # Learn-specific .results.json
 .results.json
 
-*.db
+
 .DS_Store
 *.ipynb_checkpoints
 *.pytest_cache
