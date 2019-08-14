@@ -3,7 +3,7 @@
 
 ## Introduction
 
-In this lesson, you'll continue to see how to write SQL queries to retrieve and add specific data to SQL database tables.
+In this lesson, you'll continue to see how to write SQL queries for retrieving and adding specific data to SQL database tables.
 
 ## Objectives
 You will be able to:
@@ -28,13 +28,25 @@ To select only rows representing data meeting certain conditions:
 SELECT * FROM cats WHERE name = "Maru";
 ```
 
-What if, however, you wanted to select the oldest cat? Or all of the cats that don't currently belong to an owner? Or all of the cats with short names?
+However, what if you wanted to select the oldest cat? Or all of the cats that don't currently belong to an owner? Or all of the cats with short names?
 
 Data storage isn't very useful if you can't manipulate, view, and analyze that data. Luckily for us, SQL is actually a powerful tool for doing just that.
 
 In this exercise, you'll walk through executing a handful of common and handy SQL queries.
 
 ## Code Along: SQL Queries
+
+The cats table is populated with the following data:
+
+
+|id  |name     |age    |breed              |owner_id|
+|----|---------|-------|-------------------|-----------|
+|1   |Maru     |3.0    |Scottish Fold      |1.0        |
+|2   |Hana     |1.0    |Tabby              |1.0        |
+|3   |Lil' Bub |5.0    |American Shorthair |NaN        |
+|4   |Moe      |10.0   |Tabby              |NaN        |
+|5   |Patches  |2.0    |Calico             |NaN        |
+|6   |None     |NaN    |Tabby              |NaN        |
 
 ### Creating our Database
 
@@ -45,7 +57,7 @@ Recall that you can do this by running the following commands:
 ```python
 import sqlite3 
 conn = sqlite3.connect('pets_database.db')
-c = conn.cursor()
+cur = conn.cursor()
 ```
 
 
@@ -53,10 +65,10 @@ c = conn.cursor()
 # create database connection here
 ```
 
-Let's check out our `cats` table now:
+**Let's check out our `cats` table with an SQL query:**
 
 ```python
-c.execute('''SELECT * FROM cats;''').fetchall()
+cur.execute('''SELECT * FROM cats;''').fetchall()
 ```
 
 > **Note:** the method `.fetchall()` returns a `list` where each record is represented as a `tuple`, which you can think of as a `list`-like object. If you would like to retrieve an element from a `tuple`, you simply access it by-index -- similar to how you access the elements of a normal Python list. (i.e. `example_tuple[0]` - returns element at index `0`)
@@ -82,13 +94,13 @@ This should return:
 The first query modifier you'll explore is `ORDER BY`. This modifier allows us to order the table rows returned by a certain `SELECT` statement. Here's a boilerplate `SELECT` statement that uses `ORDER BY`:
 
 ```python
-c.execute('''SELECT column_name FROM table_name ORDER BY column_name ASC|DESC;''').fetchall()
+cur.execute('''SELECT column_name FROM table_name ORDER BY column_name ASC|DESC;''').fetchall()
 ```
 
-Let's select our cats and order them by age:
+**Let's select our cats and order them by age:**
 
 ```python
-c.execute('''SELECT * FROM cats ORDER BY age;''').fetchall()
+cur.execute('''SELECT * FROM cats ORDER BY age;''').fetchall()
 ```
 
 
@@ -107,10 +119,10 @@ This should return the following:
  (4, 'Moe', 10, 'Tabby', None)]            
 ```
 
-When using `ORDER BY`, the default is to order in ascending order. If you want to specify though, you can use `ASC` for "ascending" or `DESC` for "descending." Let's try to select all of our cats and sort them by age in descending order.
+When using `ORDER BY`, the default is to order in ascending order. If you want to specify though, you can use `ASC` for "ascending" or `DESC` for "descending." **Let's try to select all of our cats and sort them by age in descending order.**
 
 ```python
-c.execute('''SELECT * FROM cats ORDER BY age DESC;''').fetchall()
+cur.execute('''SELECT * FROM cats ORDER BY age DESC;''').fetchall()
 ```
 
 
@@ -143,19 +155,20 @@ SELECT * FROM cats ORDER BY age DESC LIMIT 1;
 
 
 ```python
-c.execute('''SELECT * FROM cats ORDER BY age DESC LIMIT 1;''').fetchone()
-# OR
-# c.execute('''SELECT * FROM cats ORDER BY age DESC;''').fetchone() # returns the same element as the above
+cur.execute('''SELECT * FROM cats ORDER BY age DESC LIMIT 1;''').fetchone() 
+
+## This returns the same element as the above:
+# cur.execute('''SELECT * FROM cats ORDER BY age DESC;''').fetchone()
 ```
 
 This part of the statement: `SELECT * FROM cats ORDER BY age DESC` returns all of the cats in order from oldest to youngest. Setting a `LIMIT` of `1` returns just the first, i.e. oldest, cat on the list.
 
-Execute the above statement and you should see:
+After you execute the above statement you should see:
 
 ```python
 (4, 'Moe', 10, 'Tabby', None)            
 ```
-Let's get the two oldest cats:
+**Let's get the two oldest cats:**
 
 ```sql
 SELECT * FROM cats ORDER BY age DESC LIMIT 2;
@@ -180,7 +193,7 @@ As we've already established, being able to sort and select specific data sets i
 SELECT column_name(s) FROM table_name WHERE column_name BETWEEN value1 AND value2;
 ```
 
-Let's try it out on our `cats` table:
+**Let's try it out on our `cats` table:**
 
 ```sql
 SELECT name FROM cats WHERE age BETWEEN 1 AND 3;
@@ -199,10 +212,10 @@ This should return:
 
 ### `NULL`
 
-Some cats were added to the Database that weren't given a name. Find them with
+Some cats were added to the Database that weren't given a name. **Let's find them with:**
 
 ```sql
-select * from cats where Name is null;
+SELECT * FROM cats WHERE Name IS null;
 ```
 
 
@@ -218,16 +231,16 @@ This should return the following:
 
 ### `COUNT`
 
-Now, you'll talk about a SQL aggregate function, `COUNT`.
+Now, let's talk about the SQL aggregate function `COUNT`.
 
-**SQL aggregate functions** are SQL statements that retrieve minimum and maximum values from a column, sum values in a column, get the average of a column's values, or count a number of records that meet certain conditions. You can learn more about these SQL aggregators [here](http://www.sqlclauses.com/sql+aggregate+functions) and [here](http://zetcode.com/db/sqlite/select/).
+**SQL aggregate functions** are SQL statements that can get the average of a column's values, retrieve minimum and maximum values from a column, sum values in a column, or count a number of records that meet certain conditions. You can learn more about these SQL aggregators [here](http://www.sqlclauses.com/sql+aggregate+functions) and [here](http://zetcode.com/db/sqlite/select/).
 
-For now, you'll just focus on `COUNT`. `COUNT` will count the number of records that meet a certain condition. Here's a standard SQL query using `COUNT`:
+For now, we'll just focus on `COUNT`, which counts the number of records that meet a certain condition. Here's a standard SQL query using `COUNT`:
 
 ```sql
- "SELECT COUNT([column name]) FROM [table name] WHERE [column name] = [value]"
+SELECT COUNT([column name]) FROM [table name] WHERE [column name] = [value]
 ```
-Let's try it out and count the number of cats who have an `owner_id` of `1`:
+**Let's try it out and count the number of cats who have an `owner_id` of `1`:**
 
 ```sql
 SELECT COUNT(owner_id) FROM cats WHERE owner_id = 1;
@@ -246,7 +259,7 @@ This should return:
 
 ### `GROUP BY`
 
-Lastly, you'll talk about the handy aggregate function `GROUP BY`. Like its name
+Lastly, we'll talk about the handy aggregate function `GROUP BY`. Like its name
 suggests, it groups your results by a given column.
 
 Let's take our table of cats
@@ -273,7 +286,7 @@ SELECT breed, COUNT(breed) FROM cats GROUP BY breed;
 
 
 ```python
-# execute GROUP BY sql statement here
+# execute above GROUP BY sql statement here
 ```
 
 This should return
@@ -282,7 +295,7 @@ This should return
 [('American Shorthair', 1), ('Calico', 1), ('Scottish Fold', 1), ('Tabby', 3)]
 ```
 
-GROUP BY is a great function for aggregating results into different
+`GROUP BY` is a great function for aggregating results into different
 segments — you can even use it on multiple columns!
 
 ```sql
@@ -291,7 +304,7 @@ SELECT breed, owner_id, COUNT(breed) FROM cats GROUP BY breed, owner_id;
 
 
 ```python
-# execute multiple column group by statement here
+# execute above multiple column group by statement here
 ```
 
 This should return:
@@ -324,9 +337,9 @@ Both return:
 [('Maru',), ('Hana',), ("Lil' Bub",), ('Moe',), ('Patches',), (None,)] 
 ```
 
-SQLite allows us to explicitly state the tableName.columnName you want to select. This is particularly useful when you want data from two different tables.
+SQLite allows us to explicitly state the `tableName.columnName` you want to select. This is particularly useful when you want data from two different tables.
 
-Imagine you have another table called `dogs` with a column for the dog names:
+Imagine you have another table called `dogs` with a column containing all of the dog names:
 
 ```sql
 CREATE TABLE dogs (
@@ -343,12 +356,12 @@ INSERT INTO dogs (name) VALUES ("Clifford");
 If you want to get the names of all the dogs and cats, you can no longer run a query with just the column name.
 `SELECT name FROM cats,dogs;` will return `Error: ambiguous column name: name`.
 
-Instead, you must explicitly follow the tableName.columnName syntax.
+Instead, you must explicitly follow the `tableName.columnName` syntax.
 ```sql
 SELECT cats.name, dogs.name FROM cats, dogs;
 ```
 
-You may see this in the future. Don't let it trip you up.
+You may see this in the future. Don't let it trip you up!
 
 ## Summary
 
