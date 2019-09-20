@@ -153,10 +153,12 @@ SELECT * FROM cats ORDER BY age DESC LIMIT 1;
 
 > **Note:** When you would only like the first result (or one result as is the case in the example above) you can use the sqlite3 method `.fetchone()` which, instead of returning a list of results, returns the first result (or the record at index 0). you can use this in place of or in conjunction with `LIMIT 1` in order to get back a single element.
 
+```python
+cur.execute('''SELECT * FROM cats ORDER BY age DESC LIMIT 1;''').fetchone()
+```
+
 
 ```python
-cur.execute('''SELECT * FROM cats ORDER BY age DESC LIMIT 1;''').fetchone() 
-
 ## This returns the same element as the above:
 # cur.execute('''SELECT * FROM cats ORDER BY age DESC;''').fetchone()
 ```
