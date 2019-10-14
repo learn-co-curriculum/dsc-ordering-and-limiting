@@ -7,10 +7,10 @@ In this lesson, you'll continue to see how to write SQL queries for retrieving a
 
 ## Objectives
 You will be able to:
+* Write SQL queries to filter and order results
+* Order the results of your queries by using `ORDER BY` (`ASC` & `DESC`)
 * Limit the number of records returned by a query using `LIMIT`
 * Filter results using `BETWEEN` and `IS NULL`
-* Order the results of your queries by using `ORDER BY` (`ASC` & `DESC`)
-
 
 ## What is a SQL Query?
 
@@ -71,7 +71,7 @@ cur = conn.cursor()
 cur.execute('''SELECT * FROM cats;''').fetchall()
 ```
 
-> **Note:** the method `.fetchall()` returns a `list` where each record is represented as a `tuple`, which you can think of as a `list`-like object. If you would like to retrieve an element from a `tuple`, you simply access it by-index -- similar to how you access the elements of a normal Python list. (i.e. `example_tuple[0]` - returns element at index `0`)
+> **Note:** the method `.fetchall()` returns a `list` where each record is represented as a `tuple`, which you can think of as a `list`-like object. If you would like to retrieve an element from a `tuple`, you simply access it by index -- similar to how you access the elements of a normal Python list. (i.e. `example_tuple[0]` - returns element at index `0`)
 
 
 ```python
@@ -368,4 +368,4 @@ You may see this in the future. Don't let it trip you up!
 ## Summary
 
 In this lesson, you expanded your SQL knowledge by learning how to modify your data using statements like `ORDER BY`. 
-Additionally, you learned how to filter and limit your results.
+Additionally, you learned how to filter and limit your results using the `Between`, `IS NULL`, and `LIMIT` statements.
