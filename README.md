@@ -1,9 +1,8 @@
-
 # Filtering and Ordering
 
 ## Introduction
 
-In this lesson, you'll continue to see how to write SQL queries for retrieving and adding specific data to SQL database tables.
+One of the most powerful aspects of SQL is the ability to include only relevant data in your query results. In this lesson, you'll learn some additional techniques for limiting the results of your SQL queries using the `WHERE` clause as well as the `ORDER BY` clause combined with the `LIMIT` clause.
 
 ## Objectives
 You will be able to:
@@ -12,34 +11,14 @@ You will be able to:
 - Limit the number of records returned by a query using `LIMIT`
 - Filter results using `BETWEEN` and `IS NULL`
 
-## What is a SQL Query?
+## The Data
 
-The term "query" refers to any SQL statement that retrieves data from your database. In fact, you've already written a number of SQL queries using basic `SELECT` statements. You've already seen how to retrieve single units of data, or rows, with queries like these:
+For this lesson we'll be using a database called `pets_database.db` containing a table called `cats`.
 
-To select all of the rows from a `cats` table:
-
-```sql
-SELECT * FROM cats;
-```
-
-To select only rows representing data meeting certain conditions:
-
-```sql
-SELECT * FROM cats WHERE name = "Maru";
-```
-
-However, what if you wanted to select the oldest cat? Or all of the cats that don't currently belong to an owner? Or all of the cats with short names?
-
-Data storage isn't very useful if you can't manipulate, view, and analyze that data. Luckily for us, SQL is actually a powerful tool for doing just that.
-
-In this exercise, you'll walk through executing a handful of common and handy SQL queries.
-
-## Code Along: SQL Queries
-
-The cats table is populated with the following data:
+The `cats` table is populated with the following data:
 
 
-|id  |name     |age    |breed              |owner_id|
+|id  |name     |age    |breed              |owner_id   |
 |----|---------|-------|-------------------|-----------|
 |1   |Maru     |3.0    |Scottish Fold      |1.0        |
 |2   |Hana     |1.0    |Tabby              |1.0        |
@@ -48,190 +27,413 @@ The cats table is populated with the following data:
 |5   |Patches  |2.0    |Calico             |NaN        |
 |6   |None     |NaN    |Tabby              |NaN        |
 
-### Creating our Database
+In the cell below, we connect to the database and select all of the records:
 
-In this code along, you'll start by connecting to `pets_database.db`.
-
-Recall that you can do this by running the following commands:
 
 ```python
+import pandas as pd
 import sqlite3 
+
 conn = sqlite3.connect('pets_database.db')
-cur = conn.cursor()
+pd.read_sql("SELECT * FROM cats;", conn)
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>id</th>
+      <th>name</th>
+      <th>age</th>
+      <th>breed</th>
+      <th>owner_id</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>1</td>
+      <td>Maru</td>
+      <td>3.0</td>
+      <td>Scottish Fold</td>
+      <td>1.0</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>2</td>
+      <td>Hana</td>
+      <td>1.0</td>
+      <td>Tabby</td>
+      <td>1.0</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>3</td>
+      <td>Lil' Bub</td>
+      <td>5.0</td>
+      <td>American Shorthair</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>4</td>
+      <td>Moe</td>
+      <td>10.0</td>
+      <td>Tabby</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>5</td>
+      <td>Patches</td>
+      <td>2.0</td>
+      <td>Calico</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>6</td>
+      <td>None</td>
+      <td>NaN</td>
+      <td>Tabby</td>
+      <td>NaN</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+## Filtering Using `WHERE`
+
+We have already seen a simple example of a `WHERE` clause. For a similar example, below we select only records where the cat's name is `"Maru"`:
+
+
+```python
+pd.read_sql("SELECT * FROM cats WHERE name = 'Maru';", conn)
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>id</th>
+      <th>name</th>
+      <th>age</th>
+      <th>breed</th>
+      <th>owner_id</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>1</td>
+      <td>Maru</td>
+      <td>3</td>
+      <td>Scottish Fold</td>
+      <td>1</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+Specifically, this was an example of the `=` conditional operator. It is similar to the `==` operator in Python.
+
+When you use this operator in a `WHERE` clause, SQL returns only the records that match that condition. It is essentially doing something like this:
+
+
+```python
+# Selecting all of the records in the database
+result = pd.read_sql("SELECT * FROM cats;", conn)
+# Create a list to store the records that match the query
+cats_named_maru = []
+# Loop over all of the cats
+for _, data in result.iterrows():
+    # Check if the name is "Maru"
+    if data["name"] == "Maru":
+        # Add to list
+        cats_named_maru.append(data)
+
+# Display the result list as a DataFrame
+pd.DataFrame(cats_named_maru)
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>id</th>
+      <th>name</th>
+      <th>age</th>
+      <th>breed</th>
+      <th>owner_id</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>1</td>
+      <td>Maru</td>
+      <td>3.0</td>
+      <td>Scottish Fold</td>
+      <td>1.0</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+Clearly the SQL query is a lot shorter!
+
+It also saves memory and improves performance to make sure that you only bring data into your Python code that you actually need, which a SQL `WHERE` clause can achieve.
+
+### Conditional Operators in SQL
+
+That query worked for matching a specific value. However, what if you wanted to select the cats who are at least 5 years old? Or all of the cats that don't currently belong to an owner? Or all of the cats with names that start with "M"?
+
+We'll need some more advanced conditional operators for that.
+
+Some important ones to know are:
+
+* `!=` ("not equal to")
+  * Similar to `not` combined with `==` in Python
+* `>` ("greater than")
+  * Similar to `>` in Python
+* `>=` ("greater than or equal to")
+  * Similar to `>=` in Python
+* `<` ("less than")
+  * Similar to `<` in Python
+* `<=` ("less than or equal to")
+  * Similar to `<=` in Python
+* `AND`
+  * Similar to `and` in Python
+* `OR`
+  * Similar to `or` in Python
+* `BETWEEN`
+  * Similar to placing a value between two values with `<=` and `and` in Python, e.g. `(2 <= x) and (x <= 5)`
+* `IN`
+  * Similar to `in` in Python
+* `LIKE`
+  * Uses wildcards to find similar strings. No direct equivalent in Python, but similar to some Bash terminal commands.
+
+### `WHERE` Code-Along
+
+In this exercise, you'll walk through executing a handful of common and handy SQL queries. We'll start by giving you an example of what this type of query looks like, then have you type a query specifically related to the `cats` table.
+
+#### `WHERE` with `>=`
+
+For the `=`, `!=`, `<`, `<=`, `>`, and `>=` operators, the query looks like:
+
+```sql
+SELECT column(s) FROM table_name WHERE column_name operator value;
+```
+
+> Note: The example above is not valid SQL, it is a template for how the queries are constructed
+
+Type this SQL query between the quotes below to select all cats who are at least 5 years old:
+
+```sql
+SELECT * FROM cats WHERE age >= 5;
 ```
 
 
 ```python
-# create database connection here
-```
+pd.read_sql("""
 
-**Let's check out our `cats` table with an SQL query:**
-
-```python
-cur.execute('''SELECT * FROM cats;''').fetchall()
-```
-
-> **Note:** the method `.fetchall()` returns a `list` where each record is represented as a `tuple`, which you can think of as a `list`-like object. If you would like to retrieve an element from a `tuple`, you simply access it by index -- similar to how you access the elements of a normal Python list. (i.e. `example_tuple[0]` - returns element at index `0`)
-
-
-```python
-# select all data from cats data here
+""", conn)
 ```
 
 This should return:
 
-```python
-[(1, 'Maru', 3, 'Scottish Fold', 1),
- (2, 'Hana', 1, 'Tabby', 1),
- (3, "Lil' Bub", 5, 'American Shorthair', None),
- (4, 'Moe', 10, 'Tabby', None),
- (5, 'Patches', 2, 'Calico', None),
- (6, None, None, 'Tabby', None)]
-```
+|id  |name     |age    |breed              |owner_id   |
+|----|---------|-------|-------------------|-----------|
+|3   |Lil' Bub |5.0    |American Shorthair |None       |
+|4   |Moe      |10.0   |Tabby              |None       |
 
-### `ORDER BY`
+#### `WHERE` with `BETWEEN`
 
-The first query modifier you'll explore is `ORDER BY`. This modifier allows us to order the table rows returned by a certain `SELECT` statement. Here's a boilerplate `SELECT` statement that uses `ORDER BY`:
+If you wanted to select all rows with values in a range, you _could_ do this by combining the `<=` and `AND` operators. However, since this is such a common task in SQL, there is a shorter and more efficient command specifically for this purpose, called `BETWEEN`.
 
-```python
-cur.execute('''SELECT column_name FROM table_name ORDER BY column_name ASC|DESC;''').fetchall()
-```
-
-**Let's select our cats and order them by age:**
-
-```python
-cur.execute('''SELECT * FROM cats ORDER BY age;''').fetchall()
-```
-
-
-```python
-# select all cats order by age here
-```
-
-This should return the following:
-
-```python
-[(6, None, None, 'Tabby', None),
- (2, 'Hana', 1, 'Tabby', 1),
- (5, 'Patches', 2, 'Calico', None),
- (1, 'Maru', 3, 'Scottish Fold', 1),
- (3, "Lil' Bub", 5, 'American Shorthair', None),
- (4, 'Moe', 10, 'Tabby', None)]            
-```
-
-When using `ORDER BY`, the default is to order in ascending order. If you want to specify though, you can use `ASC` for "ascending" or `DESC` for "descending." **Let's try to select all of our cats and sort them by age in descending order.**
-
-```python
-cur.execute('''SELECT * FROM cats ORDER BY age DESC;''').fetchall()
-```
-
-
-```python
-# select cats order by age descending here
-```
-
-This should return
-
-```python
-[(4, 'Moe', 10, 'Tabby', None),
- (3, "Lil' Bub", 5, 'American Shorthair', None),
- (1, 'Maru', 3, 'Scottish Fold', 1),
- (5, 'Patches', 2, 'Calico', None),
- (2, 'Hana', 1, 'Tabby', 1),
- (6, None, None, 'Tabby', None)]      
-```
-
-### `LIMIT`
-
-What if you want the oldest cat? If you want to select extremes from a database table––for example, the employee with the highest paycheck or the patient with the most recent appointment––we can use `ORDER BY` in conjunction with `LIMIT`.
-
-`LIMIT` is used to determine the number of records you want to return from a dataset. For example:
-
-```sql
-SELECT * FROM cats ORDER BY age DESC LIMIT 1;
-```
-
-> **Note:** When you would only like the first result (or one result as is the case in the example above) you can use the sqlite3 method `.fetchone()` which, instead of returning a list of results, returns the first result (or the record at index 0). you can use this in place of or in conjunction with `LIMIT 1` in order to get back a single element.
-
-```python
-cur.execute('''SELECT * FROM cats ORDER BY age DESC LIMIT 1;''').fetchone()
-```
-
-
-```python
-## This returns the same element as the above:
-# cur.execute('''SELECT * FROM cats ORDER BY age DESC;''').fetchone()
-```
-
-This part of the statement: `SELECT * FROM cats ORDER BY age DESC` returns all of the cats in order from oldest to youngest. Setting a `LIMIT` of `1` returns just the first, i.e. oldest, cat on the list.
-
-After you execute the above statement you should see:
-
-```python
-(4, 'Moe', 10, 'Tabby', None)            
-```
-**Let's get the two oldest cats:**
-
-```sql
-SELECT * FROM cats ORDER BY age DESC LIMIT 2;
-```
-
-
-```python
-# select the two oldest cats here
-```
-
-Execute that statement and you should see:
-
-```python
-[(4, 'Moe', 10, 'Tabby', None), (3, "Lil' Bub", 5, 'American Shorthair', None)]          
-```
-
-### `BETWEEN`
-
-As we've already established, being able to sort and select specific data sets is important. Continuing on with our example, let's say you urgently need to select all of the cats whose age is between 1 and 3. To create such a query, you can use `BETWEEN`. Here's a boilerplate `SELECT` statement using `BETWEEN`:
+A typical query with `BETWEEN` looks like:
 
 ```sql
 SELECT column_name(s) FROM table_name WHERE column_name BETWEEN value1 AND value2;
 ```
 
-**Let's try it out on our `cats` table:**
+> Note that `BETWEEN` is an **inclusive** range, so the returned values can match the boundary values (not like `range()` in Python)
+
+Let's say you need to select the names of all of the cats whose age is between 1 and 3. Type this SQL query between the quotes below to select all cats who are in this age range:
 
 ```sql
-SELECT name FROM cats WHERE age BETWEEN 1 AND 3;
+SELECT * FROM cats WHERE age BETWEEN 1 AND 3;
 ```
 
 
 ```python
-# find all records between ages 1 and three here
+pd.read_sql("""
+
+""", conn)
 ```
 
 This should return:
 
-```python
-[('Maru',), ('Hana',), ('Patches',)]
-```
+|id  |name     |age    |breed              |owner_id   |
+|----|---------|-------|-------------------|-----------|
+|1   |Maru     |3.0    |Scottish Fold      |1.0        |
+|2   |Hana     |1.0    |Tabby              |1.0        |
+|5   |Patches  |2.0    |Calico             |NaN        |
 
-### `NULL`
+#### `WHERE` Column Is Not `NULL`
 
-Some cats were added to the Database that weren't given a name. **Let's find them with:**
+`NULL` in SQL represents missing data. It is similar to `None` in Python or `NaN` in NumPy or pandas. However, we use the `IS` operator to check if something is `NULL`, not the `=` operator (or `IS NOT` instead of `!=`).
+
+To check if a value is `NULL` (or not), the query looks like:
 
 ```sql
-SELECT * FROM cats WHERE Name IS null;
+SELECT column(s) FROM table_name WHERE column_name IS (NOT) NULL;
+```
+
+> You might have noticed when we selected all rows of `cats`, some owner IDs were `NaN`, then in the above query they are `None` instead. This is a subtle difference where Python/pandas is converting SQL `NULL` values to `NaN` when there are numbers in other rows, and converting to `None` when all of the returned values are `NULL`. This is a subtle difference that you don't need to memorize; it is just highlighted to demonstrate that the operators we use in SQL are _similar_ to Python operators, but not quite the same.
+
+If we want to select all cats that don't currently belong to an owner, we want to select all cats where the `owner_id` is `NULL`.
+
+Type this SQL query between the quotes below to select all cats that don't currently belong to an owner:
+
+```sql
+SELECT * FROM cats WHERE owner_id IS NULL;
 ```
 
 
 ```python
-# select cats where the name field is null here
+pd.read_sql("""
+
+""", conn)
 ```
 
-This should return the following:
+This should return:
+
+|id  |name     |age    |breed              |owner_id   |
+|----|---------|-------|-------------------|-----------|
+|3   |Lil' Bub |5.0    |American Shorthair |None       |
+|4   |Moe      |10.0   |Tabby              |None       |
+|5   |Patches  |2.0    |Calico             |None       |
+|6   |None     |NaN    |Tabby              |None       |
+
+#### `WHERE` with `LIKE`
+
+The `LIKE` operator is very helpful for writing SQL queries with messy data. It uses _wildcards_ to specify which parts of the string query need to be an exact match and which parts can be variable.
+
+When using `LIKE`, a query looks like:
+
+```sql
+SELECT column(s) FROM table_name WHERE column_name LIKE 'string_with_wildcards';
+```
+
+The most common wildcard you'll see is `%`. This is similar to the `*` wildcard in Bash or regex: it means zero or more characters with any value can be in that position.
+
+So for example, if we want all cats with names that start with "M", we could use a query containing `M%`. This means that we're looking for matches that start with one character "M" (or "m", since this is a case-insensitive query in SQLite) and then zero or more characters that can have any value.
+
+Type this SQL query between the quotes below to select all cats with names that start with "M" (or "m"):
+
+```sql
+SELECT * FROM cats WHERE name LIKE 'M%';
+```
+
 
 ```python
-[(6, None, None, 'Tabby', None)]
+pd.read_sql("""
+
+""", conn)
 ```
 
-### `COUNT`
+This should return:
+
+|id  |name     |age    |breed              |owner_id   |
+|----|---------|-------|-------------------|-----------|
+|1   |Maru     |3.0    |Scottish Fold      |1.0        |
+|4   |Moe      |10.0   |Tabby              |NaN        |
+
+The other wildcard used for comparing strings is `_`, which means exactly one character, with any value.
+
+For example, if we wanted to select all cats with four-letter names where the second letter was "a", we could use `_a__`.
+
+Type this SQL query between the quotes below to select all cats with names where the second letter is "a" and the name is four letters long:
+
+```sql
+SELECT * FROM cats WHERE name LIKE '_a__';
+```
+
+
+```python
+pd.read_sql("""
+
+""", conn)
+```
+
+This should return:
+
+|id  |name     |age    |breed              |owner_id   |
+|----|---------|-------|-------------------|-----------|
+|1   |Maru     |3      |Scottish Fold      |1          |
+|2   |Hana     |1      |Tabby              |1          |
+
+These examples are a bit silly, but you can imagine how this technique would help to write queries between multiple datasets where the names don't quite match exactly! You can combine `%` and `_` in your string to narrow and expand your query results as needed.
+
+#### `SELECT` with `COUNT`
 
 Now, let's talk about the SQL aggregate function `COUNT`.
 
@@ -240,9 +442,10 @@ Now, let's talk about the SQL aggregate function `COUNT`.
 For now, we'll just focus on `COUNT`, which counts the number of records that meet a certain condition. Here's a standard SQL query using `COUNT`:
 
 ```sql
-SELECT COUNT([column name]) FROM [table name] WHERE [column name] = [value]
+SELECT COUNT(column_name) FROM table_name WHERE conditional_statement;
 ```
-**Let's try it out and count the number of cats who have an `owner_id` of `1`:**
+
+Let's try it out and count the number of cats who have an `owner_id` of `1`. Type this SQL query between the quotes below:
 
 ```sql
 SELECT COUNT(owner_id) FROM cats WHERE owner_id = 1;
@@ -250,76 +453,145 @@ SELECT COUNT(owner_id) FROM cats WHERE owner_id = 1;
 
 
 ```python
-# retrieve the count of cats whose owner id = 1 here
+pd.read_sql("""
+
+""", conn)
 ```
 
 This should return:
 
-```python
-(2,)
-```
+|  |COUNT(owner_id) |
+|--|----------------|
+|0 |2               |
 
-### `GROUP BY`
+## Ordering and Limiting Results
 
-Lastly, we'll talk about the handy aggregate function `GROUP BY`. Like its name
-suggests, it groups your results by a given column.
+Sometimes you aren't most interested in results that match an _absolute_ value like "greater than or equal to 5" or "matching 'Maru'", but rather a _relative_ value like "oldest", "youngest", "longest", "shortest", etc. To do this, you first need to use `ORDER BY` to sort the values, then `LIMIT` to select only the top values based on your sorting.
 
-Let's take our table of cats
+### `ORDER BY`
 
-```bash
-id          name        age         breed          owner_id  
-----------  ----------  ----------  -------------  ----------
-1           Maru        3           Scottish Fold  1         
-2           Hana        1           Tabby          1         
-3           Lil\' Bub   5           American Shor            
-4           Moe         10          Tabby                    
-5           Patches     2           Calico                   
-6                                   Tabby                    
-```
+By default, SQL query results will be returned in the order that they are in the database. If you want to specify the sort order of the returned rows, you use the `ORDER BY` clause.
 
-Here, you can see at a glance that there are three tabby cats and
-one of every other breed — but what if you had a larger database
-where you couldn't just tally up the number of cats *grouped by*
-breed? That's where — you guessed it! — `GROUP BY` comes in handy.
-
-``` sql
-SELECT breed, COUNT(breed) FROM cats GROUP BY breed;
-```
-
-
-```python
-# execute above GROUP BY sql statement here
-```
-
-This should return
-
-```python
-[('American Shorthair', 1), ('Calico', 1), ('Scottish Fold', 1), ('Tabby', 3)]
-```
-
-`GROUP BY` is a great function for aggregating results into different
-segments — you can even use it on multiple columns!
+A standard query with `ORDER BY` looks like this:
 
 ```sql
-SELECT breed, owner_id, COUNT(breed) FROM cats GROUP BY breed, owner_id;
+SELECT column(s) FROM table_name ORDER BY column_name (sort_order);
+```
+
+Let's select all cats and order them by age. Type this SQL query between the quotes below:
+
+```sql
+SELECT * FROM cats ORDER BY age;
 ```
 
 
 ```python
-# execute above multiple column group by statement here
+pd.read_sql("""
+
+""", conn)
 ```
 
 This should return:
 
-```python
-[('American Shorthair', None, 1),
- ('Calico', None, 1),
- ('Scottish Fold', 1, 1),
- ('Tabby', None, 2),
- ('Tabby', 1, 1)]
+|id  |name     |age    |breed              |owner_id   |
+|----|---------|-------|-------------------|-----------|
+|6   |None     |NaN    |Tabby              |NaN        |
+|2   |Hana     |1.0    |Tabby              |1.0        |
+|5   |Patches  |2.0    |Calico             |NaN        |
+|1   |Maru     |3.0    |Scottish Fold      |1.0        |
+|3   |Lil' Bub |5.0    |American Shorthair |NaN        |
+|4   |Moe      |10.0   |Tabby              |NaN        |
+
+When using `ORDER BY`, the default is to order in ascending order. If you want to specify though, you can use `ASC` for "ascending" or `DESC` for "descending." Let's try to select all of our cats and sort them by age in descending order. Type this SQL query between the quotes below:
+
+```sql
+SELECT * FROM cats ORDER BY age DESC;
 ```
 
-### Note on `SELECT`
+
+```python
+pd.read_sql("""
+
+""", conn)
+```
+
+This should return:
+
+|id  |name     |age    |breed              |owner_id   |
+|----|---------|-------|-------------------|-----------|
+|4   |Moe      |10.0   |Tabby              |NaN        |
+|3   |Lil' Bub |5.0    |American Shorthair |NaN        |
+|1   |Maru     |3.0    |Scottish Fold      |1.0        |
+|5   |Patches  |2.0    |Calico             |NaN        |
+|2   |Hana     |1.0    |Tabby              |1.0        |
+|6   |None     |NaN    |Tabby              |NaN        |
+
+### `LIMIT`
+
+`LIMIT` is used to determine the number of records you want to return from a dataset. 
+
+A standard query with `LIMIT` would be:
+
+```sql
+SELECT column(s) FROM table_name LIMIT number;
+```
+
+Type this SQL query between the quotes below to select the first three rows of the `cats` table:
+
+```sql
+SELECT * FROM cats LIMIT 3;
+```
+
+
+```python
+pd.read_sql("""
+
+""", conn)
+```
+
+This should return:
+
+|id  |name     |age    |breed              |owner_id   |
+|----|---------|-------|-------------------|-----------|
+|1   |Maru     |3.0    |Scottish Fold      |1.0        |
+|2   |Hana     |1.0    |Tabby              |1.0        |
+|3   |Lil' Bub |5.0    |American Shorthair |NaN        |
+
+### `ORDER BY` with `LIMIT`
+
+What if you want the oldest cat? The three oldest cats? If you want to select extremes from a database table -- for example, the employee with the highest paycheck or the patient with the most recent appointment -- we can use `ORDER BY` in conjunction with `LIMIT`.
+
+Type this SQL query between the quotes below to select the oldest cat:
+
+```sql
+SELECT * FROM cats ORDER BY age DESC LIMIT 1;
+```
+
+
+```python
+pd.read_sql("""
+
+""", conn)
+```
+
+This should return:
+
+|id  |name     |age    |breed              |owner_id   |
+|----|---------|-------|-------------------|-----------|
+|4   |Moe      |10.0   |Tabby              |NaN        |
+
+This part of the statement: `SELECT * FROM cats ORDER BY age DESC` returns all of the cats in order from oldest to youngest. Setting a `LIMIT` of `1` returns just the first, i.e. oldest, cat on the list.
+
+We could also get the two oldest cats by changing the limit to 2:
+
+
+```python
+pd.read_sql("""
+SELECT * FROM cats ORDER BY age DESC LIMIT 2;
+""", conn)
+```
+
+## Note on `SELECT`
 
 We are now familiar with this syntax:
 
@@ -333,11 +605,7 @@ However, you may not know that this can be written like this as well:
 SELECT cats.name FROM cats;
 ```
 
-Both return:
-
-```python
-[('Maru',), ('Hana',), ("Lil' Bub",), ('Moe',), ('Patches',), (None,)] 
-```
+Both return the same data.
 
 SQLite allows us to explicitly state the `tableName.columnName` you want to select. This is particularly useful when you want data from two different tables.
 
@@ -365,7 +633,11 @@ SELECT cats.name, dogs.name FROM cats, dogs;
 
 You may see this in the future. Don't let it trip you up!
 
+
+```python
+conn.close()
+```
+
 ## Summary
 
-In this lesson, you expanded your SQL knowledge by learning how to modify your data using statements like `ORDER BY`. 
-Additionally, you learned how to filter and limit your results using the `Between`, `IS NULL`, and `LIMIT` statements.
+In this lesson, you expanded your SQL knowledge by learning how to limit the results of your query using `WHERE`, `ORDER BY`, and `LIMIT`. You also got a basic introduction to aggregate functions by seeing an example of `COUNT`, and dove deeper into some conditional operators including `BETWEEN` and `LIKE`.
