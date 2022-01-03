@@ -279,7 +279,9 @@ In this exercise, you'll walk through executing a handful of common and handy SQ
 For the `=`, `!=`, `<`, `<=`, `>`, and `>=` operators, the query looks like:
 
 ```sql
-SELECT column(s) FROM table_name WHERE column_name operator value;
+SELECT column(s)
+  FROM table_name
+ WHERE column_name operator value;
 ```
 
 > Note: The example above is not valid SQL, it is a template for how the queries are constructed
@@ -287,7 +289,9 @@ SELECT column(s) FROM table_name WHERE column_name operator value;
 Type this SQL query between the quotes below to select all cats who are at least 5 years old:
 
 ```sql
-SELECT * FROM cats WHERE age >= 5;
+SELECT *
+  FROM cats
+ WHERE age >= 5;
 ```
 
 
@@ -311,7 +315,9 @@ If you wanted to select all rows with values in a range, you _could_ do this by 
 A typical query with `BETWEEN` looks like:
 
 ```sql
-SELECT column_name(s) FROM table_name WHERE column_name BETWEEN value1 AND value2;
+SELECT column_name(s)
+  FROM table_name
+ WHERE column_name BETWEEN value1 AND value2;
 ```
 
 > Note that `BETWEEN` is an **inclusive** range, so the returned values can match the boundary values (not like `range()` in Python)
@@ -319,7 +325,9 @@ SELECT column_name(s) FROM table_name WHERE column_name BETWEEN value1 AND value
 Let's say you need to select the names of all of the cats whose age is between 1 and 3. Type this SQL query between the quotes below to select all cats who are in this age range:
 
 ```sql
-SELECT * FROM cats WHERE age BETWEEN 1 AND 3;
+SELECT *
+  FROM cats
+ WHERE age BETWEEN 1 AND 3;
 ```
 
 
@@ -344,7 +352,9 @@ This should return:
 To check if a value is `NULL` (or not), the query looks like:
 
 ```sql
-SELECT column(s) FROM table_name WHERE column_name IS (NOT) NULL;
+SELECT column(s)
+  FROM table_name
+ WHERE column_name IS (NOT) NULL;
 ```
 
 > You might have noticed when we selected all rows of `cats`, some owner IDs were `NaN`, then in the above query they are `None` instead. This is a subtle difference where Python/pandas is converting SQL `NULL` values to `NaN` when there are numbers in other rows, and converting to `None` when all of the returned values are `NULL`. This is a subtle difference that you don't need to memorize; it is just highlighted to demonstrate that the operators we use in SQL are _similar_ to Python operators, but not quite the same.
@@ -354,7 +364,9 @@ If we want to select all cats that don't currently belong to an owner, we want t
 Type this SQL query between the quotes below to select all cats that don't currently belong to an owner:
 
 ```sql
-SELECT * FROM cats WHERE owner_id IS NULL;
+SELECT *
+  FROM cats
+ WHERE owner_id IS NULL;
 ```
 
 
@@ -380,7 +392,9 @@ The `LIKE` operator is very helpful for writing SQL queries with messy data. It 
 When using `LIKE`, a query looks like:
 
 ```sql
-SELECT column(s) FROM table_name WHERE column_name LIKE 'string_with_wildcards';
+SELECT column(s)
+  FROM table_name
+ WHERE column_name LIKE 'string_with_wildcards';
 ```
 
 The most common wildcard you'll see is `%`. This is similar to the `*` wildcard in Bash or regex: it means zero or more characters with any value can be in that position.
@@ -390,7 +404,9 @@ So for example, if we want all cats with names that start with "M", we could use
 Type this SQL query between the quotes below to select all cats with names that start with "M" (or "m"):
 
 ```sql
-SELECT * FROM cats WHERE name LIKE 'M%';
+SELECT *
+  FROM cats
+ WHERE name LIKE 'M%';
 ```
 
 
@@ -414,7 +430,9 @@ For example, if we wanted to select all cats with four-letter names where the se
 Type this SQL query between the quotes below to select all cats with names where the second letter is "a" and the name is four letters long:
 
 ```sql
-SELECT * FROM cats WHERE name LIKE '_a__';
+SELECT *
+  FROM cats
+ WHERE name LIKE '_a__';
 ```
 
 
@@ -442,13 +460,17 @@ Now, let's talk about the SQL aggregate function `COUNT`.
 For now, we'll just focus on `COUNT`, which counts the number of records that meet a certain condition. Here's a standard SQL query using `COUNT`:
 
 ```sql
-SELECT COUNT(column_name) FROM table_name WHERE conditional_statement;
+SELECT COUNT(column_name)
+  FROM table_name
+ WHERE conditional_statement;
 ```
 
 Let's try it out and count the number of cats who have an `owner_id` of `1`. Type this SQL query between the quotes below:
 
 ```sql
-SELECT COUNT(owner_id) FROM cats WHERE owner_id = 1;
+SELECT COUNT(owner_id)
+  FROM cats
+ WHERE owner_id = 1;
 ```
 
 
@@ -475,13 +497,17 @@ By default, SQL query results will be returned in the order that they are in the
 A standard query with `ORDER BY` looks like this:
 
 ```sql
-SELECT column(s) FROM table_name ORDER BY column_name (sort_order);
+SELECT column(s)
+  FROM table_name
+ ORDER BY column_name (sort_order);
 ```
 
 Let's select all cats and order them by age. Type this SQL query between the quotes below:
 
 ```sql
-SELECT * FROM cats ORDER BY age;
+SELECT *
+  FROM cats
+ ORDER BY age;
 ```
 
 
@@ -505,7 +531,9 @@ This should return:
 When using `ORDER BY`, the default is to order in ascending order. If you want to specify though, you can use `ASC` for "ascending" or `DESC` for "descending." Let's try to select all of our cats and sort them by age in descending order. Type this SQL query between the quotes below:
 
 ```sql
-SELECT * FROM cats ORDER BY age DESC;
+SELECT *
+  FROM cats
+ ORDER BY age DESC;
 ```
 
 
@@ -533,13 +561,17 @@ This should return:
 A standard query with `LIMIT` would be:
 
 ```sql
-SELECT column(s) FROM table_name LIMIT number;
+SELECT column(s)
+  FROM table_name
+ LIMIT number;
 ```
 
 Type this SQL query between the quotes below to select the first three rows of the `cats` table:
 
 ```sql
-SELECT * FROM cats LIMIT 3;
+SELECT *
+  FROM cats
+ LIMIT 3;
 ```
 
 
@@ -564,7 +596,10 @@ What if you want the oldest cat? The three oldest cats? If you want to select ex
 Type this SQL query between the quotes below to select the oldest cat:
 
 ```sql
-SELECT * FROM cats ORDER BY age DESC LIMIT 1;
+SELECT *
+  FROM cats
+ ORDER BY age DESC
+ LIMIT 1;
 ```
 
 
@@ -587,7 +622,10 @@ We could also get the two oldest cats by changing the limit to 2:
 
 ```python
 pd.read_sql("""
-SELECT * FROM cats ORDER BY age DESC LIMIT 2;
+SELECT *
+  FROM cats
+ ORDER BY age DESC
+ LIMIT 2;
 """, conn)
 ```
 
@@ -596,13 +634,15 @@ SELECT * FROM cats ORDER BY age DESC LIMIT 2;
 We are now familiar with this syntax:
 
 ```sql
-SELECT name FROM cats;
+SELECT name
+  FROM cats;
 ```
 
 However, you may not know that this can be written like this as well:
 
 ```sql
-SELECT cats.name FROM cats;
+SELECT cats.name
+  FROM cats;
 ```
 
 Both return the same data.
@@ -613,13 +653,14 @@ Imagine you have another table called `dogs` with a column containing all of the
 
 ```sql
 CREATE TABLE dogs (
-	id INTEGER PRIMARY KEY,
+	id   INTEGER PRIMARY KEY,
 	name TEXT
 );
 ```
 
 ```sql
-INSERT INTO dogs (name) VALUES ("Clifford");
+INSERT INTO dogs (name)
+VALUES ("Clifford");
 ```
 
 
@@ -628,7 +669,8 @@ If you want to get the names of all the dogs and cats, you can no longer run a q
 
 Instead, you must explicitly follow the `tableName.columnName` syntax.
 ```sql
-SELECT cats.name, dogs.name FROM cats, dogs;
+SELECT cats.name, dogs.name
+  FROM cats, dogs;
 ```
 
 You may see this in the future. Don't let it trip you up!
