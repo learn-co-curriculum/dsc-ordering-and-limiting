@@ -1,7 +1,5 @@
 # Created by https://www.gitignore.io/api/node
 
-.DS_Store
-
 ### Node ###
 # Logs
 logs
@@ -38,3 +36,4 @@ jspm_packages
 *.pytest_cache
 *.pyc
 *__pycache__
+!*.sqlite
