@@ -7,6 +7,7 @@ In this lesson, you'll learn how to sort your query results using an `ORDER BY` 
 ## Objectives
 
 You will be able to:
+
 - Order the results of your queries by using `ORDER BY` (`ASC` & `DESC`)
 - Limit the number of records returned by a query using `LIMIT`
 - Write SQL queries to filter and order results
